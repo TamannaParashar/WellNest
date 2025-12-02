@@ -9,12 +9,23 @@ export default function Login() {
   const {signIn, isLoaded:signInLoaded} = useSignIn();
   const {signUp, isLoaded:signUpLoaded} = useSignUp();
   const [isVerifying, setIsVerifying] = useState(false);
+  const [resetVerifying,setResetVerifying] = useState(false);
+  
   const d1 = useRef(null);
   const d2 = useRef(null);
   const d3 = useRef(null);
   const d4 = useRef(null);
   const d5 = useRef(null);
   const d6 = useRef(null);
+
+  const r1 = useRef(null);
+  const r2 = useRef(null);
+  const r3 = useRef(null);
+  const r4 = useRef(null);
+  const r5 = useRef(null);
+  const r6 = useRef(null);
+
+  const pswd = useRef(null)
 
   const handleLogin = async(e) => {
     e.preventDefault()
@@ -54,6 +65,7 @@ export default function Login() {
       });
 
       alert("Password reset email sent!");
+      setResetVerifying(true);
     } catch (err) {
       alert(err.errors?.[0]?.longMessage || "Reset failed");
     } finally {
@@ -101,6 +113,24 @@ export default function Login() {
     setIsLoading(false);
   }
 };
+
+const handleResetVerification=async(e)=>{
+  e.preventDefault();
+  const code = r1.current.value+r2.current.value+r3.current.value+r4.current.value+r5.current.value+r6.current.value
+  setIsLoading(true);
+
+  try {
+    await signIn.attemptResetPassword({ code, newPassword: pswd.current.value });
+    alert("Password has been reset! You can now log in.");
+    setResetVerifying(false);
+    setEmail("");
+    setPassword("");
+  } catch (err) {
+    alert(err.errors?.[0]?.longMessage || "Invalid code");
+  } finally {
+    setIsLoading(false);
+  }
+}
 
   return (
     <div className="max-h-screen overflow-y-hidden bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center p-4">
@@ -212,6 +242,25 @@ export default function Login() {
             <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-black" ref={d6} />
           </div>
           <button onClick={handleVerification}>Submit</button>
+        </div>
+        </div>
+      )}
+      {resetVerifying && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white p-6 rounded-xl shadow-xl text-center">
+          <h2 className="text-lg font-bold mb-4">Enter Verification Code</h2>
+          <div className="flex gap-3 justify-center mb-4">
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-black" ref={r1} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-black" ref={r2} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-black" ref={r3} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-black" ref={r4} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-black" ref={r5} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-black" ref={r6} />
+          </div>
+          <div className="m-4">
+            <input type="password" placeholder="Enter new password" ref={pswd} className="w-full px-4 py-3 border-2 border-black text-black" />
+          </div>
+          <button onClick={handleResetVerification}>Submit</button>
         </div>
         </div>
       )}
