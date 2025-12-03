@@ -1,4 +1,4 @@
-import { useSignIn, useSignUp, useUser } from "@clerk/clerk-react"
+import { SignOutButton, useSignIn, useSignUp, useUser } from "@clerk/clerk-react"
 import { useRef, useState } from "react"
 
 export default function Login() {
@@ -10,7 +10,9 @@ export default function Login() {
   const {signUp, isLoaded:signUpLoaded} = useSignUp();
   const [isVerifying, setIsVerifying] = useState(false);
   const [resetVerifying,setResetVerifying] = useState(false);
-  
+
+  const {user} = useUser();
+
   const d1 = useRef(null);
   const d2 = useRef(null);
   const d3 = useRef(null);
@@ -34,15 +36,25 @@ export default function Login() {
       setIsLoading(false);
       return;
     }
+    if (user) {
+  alert(`Already signed in as ${user.primaryEmailAddress?.emailAddress}`);
+  return;
+}
     try{
       const result = await signIn.create({
         identifier: email,
         password,
       });
       if (result.status === "complete") {
-        await signIn.authenticate();
         console.log(`Logged in as ${activeTab}`);
       }
+      const res = await fetch("http://localhost:8080/api/login",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({email:email,userType:activeTab})
+      })
+      const data = await res.json();
+      console.log("Saved to backend",data);
     }catch(err){
       console.error("Login failed:", err);
       alert("Login failed: " + err.errors?.[0]?.longMessage || err.message);
@@ -265,6 +277,9 @@ const handleResetVerification=async(e)=>{
         </div>
         </div>
       )}
+      <div>
+        <SignOutButton>signout</SignOutButton>
+      </div>
     </div>
   )
 }
