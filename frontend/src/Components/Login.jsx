@@ -97,7 +97,6 @@ export default function Login() {
     e.preventDefault();
   const code = d1.current.value+d2.current.value+d3.current.value+d4.current.value+d5.current.value+d6.current.value
   setIsLoading(true);
-
   try {
     const result = await signUp.attemptEmailAddressVerification({code});
     if (result.status === "complete") {
@@ -118,9 +117,11 @@ const handleResetVerification=async(e)=>{
   e.preventDefault();
   const code = r1.current.value+r2.current.value+r3.current.value+r4.current.value+r5.current.value+r6.current.value
   setIsLoading(true);
+  const newPswd = pswd.current.value
 
   try {
-    await signIn.attemptResetPassword({ code, newPassword: pswd.current.value });
+    await signIn.attemptFirstFactor({strategy:"reset_password_email_code",code})
+    await signIn.resetPassword({password:newPswd})
     alert("Password has been reset! You can now log in.");
     setResetVerifying(false);
     setEmail("");
