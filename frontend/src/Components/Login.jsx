@@ -1,5 +1,6 @@
 import { SignOutButton, useSignIn, useSignUp, useUser } from "@clerk/clerk-react"
 import { useRef, useState } from "react"
+import {useNavigate} from "react-router-dom"
 
 export default function Login() {
   const [activeTab, setActiveTab] = useState("user");
@@ -12,6 +13,7 @@ export default function Login() {
   const [resetVerifying,setResetVerifying] = useState(false);
 
   const {user} = useUser();
+  const navigate = useNavigate();
 
   const d1 = useRef(null);
   const d2 = useRef(null);
@@ -37,18 +39,21 @@ export default function Login() {
       return;
     }
     if (user) {
-  alert(`Already signed in as ${user.primaryEmailAddress?.emailAddress}`);
-  return;
-}
+      alert(`Already signed in as ${user.primaryEmailAddress?.emailAddress}`);
+      return;
+    }
+    
     try{
       const result = await signIn.create({
         identifier: email,
         password,
       });
       if (result.status === "complete") {
+        localStorage.setItem("userEmail", email);
+        navigate("/profile");
         console.log(`Logged in as ${activeTab}`);
       }
-      const res = await fetch("http://localhost:8080/api/login",{
+      const res = await fetch("http://localhost:8080/api/users",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({email:email,userType:activeTab})
@@ -116,6 +121,7 @@ export default function Login() {
       setIsVerifying(false);
       setEmail("");
       setPassword("");
+      navigate("/profile");
     }
 
   } catch (err) {
@@ -138,6 +144,7 @@ const handleResetVerification=async(e)=>{
     setResetVerifying(false);
     setEmail("");
     setPassword("");
+    navigate("/profile");
   } catch (err) {
     alert(err.errors?.[0]?.longMessage || "Invalid code");
   } finally {
@@ -277,9 +284,6 @@ const handleResetVerification=async(e)=>{
         </div>
         </div>
       )}
-      <div>
-        <SignOutButton>signout</SignOutButton>
-      </div>
     </div>
   )
 }
