@@ -28,7 +28,7 @@ export default function Profile() {
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/users/${email}`);
+        const res = await fetch(`http://localhost:8080/api/user-profile/${email}`);
         const data = await res.json();
         setFormData({
           name: data.name || "",
@@ -57,7 +57,7 @@ export default function Profile() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch(`http://localhost:8080/api/users/${email}`, {
+      const res = await fetch(`http://localhost:8080/api/user-profile/${email}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -83,9 +83,6 @@ export default function Profile() {
       <nav className="bg-black border-b border-green-500 fixed top-0 left-0 w-full z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
           <h1 className="text-2xl font-bold text-green-500">WellNest</h1>
-          <SignOutButton>
-            <button className="text-white hover:text-green-500">Sign Out</button>
-          </SignOutButton>
         </div>
       </nav>
 
