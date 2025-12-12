@@ -1,9 +1,8 @@
-"use client"
-
 import {useState,useEffect} from "react"
 import {SignOutButton, useUser} from "@clerk/clerk-react"
 import {Link,useNavigate} from "react-router-dom"
 import {Menu, X, Activity, Heart, Target, Droplet, Moon, Utensils, TrendingUp} from "lucide-react"
+
 
 export default function Home() {
   const [isNavOpen, setIsNavOpen] = useState(false)
@@ -222,9 +221,9 @@ export default function Home() {
         </section>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-2 gap-6 mt-16">
+        <div className="grid md:grid-cols-2 gap-10 mt-16">
           {/* Health Blog */}
-          <div className="bg-black border-2 border-green-500/30 rounded-2xl p-8 hover:border-green-500 transition-all group">
+          <div className="bg-black border-2 border-green-500/30 rounded-2xl p-6 hover:border-green-500 transition-all group">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors">
                 <TrendingUp className="w-6 h-6 text-green-500" />
@@ -241,7 +240,7 @@ export default function Home() {
           </div>
 
           {/* Community Posts */}
-          <div className="bg-black border-2 border-green-500/30 rounded-2xl p-8 hover:border-green-500 transition-all group">
+          <div className="bg-black border-2 border-green-500/30 rounded-2xl p-6 hover:border-green-500 transition-all group">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors">
                 <Heart className="w-6 h-6 text-green-500" />
@@ -256,7 +255,7 @@ export default function Home() {
           </div>
 
           {/* Trainer Matching */}
-          <div className="bg-black border-2 border-green-500/30 rounded-2xl p-8 hover:border-green-500 transition-all group">
+          <div className="bg-black border-2 border-green-500/30 rounded-2xl p-6 hover:border-green-500 transition-all group">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors">
                 <Activity className="w-6 h-6 text-green-500" />
@@ -284,7 +283,7 @@ export default function Home() {
           </div>
 
           {/* Analytics Dashboard */}
-          <div className="bg-black border-2 border-green-500/30 rounded-2xl p-8 hover:border-green-500 transition-all group">
+          <div className="bg-black border-2 border-green-500/30 rounded-2xl p-6 hover:border-green-500 transition-all group">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors">
                 <Target className="w-6 h-6 text-green-500" />
@@ -416,6 +415,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <footer className="flex justify-center text-green-500">
+        <p className="mb-4">&copy; {new Date().getFullYear()} WellNest. All rights reserved | <Link to='#'>Privacy Policy</Link></p>
+      </footer>
     </div>
   )
 }

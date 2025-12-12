@@ -9,6 +9,7 @@ import Profile from './Components/Profile'
 import Home from './Components/Home'
 import Tracker from './Components/Tracker'
 import ViewLog from './Components/ViewLog'
+import Dashboard from './Components/Dashboard'
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
         <Route element={<Login/>} path='/'></Route>
         <Route element={<Profile/>} path='/profile'></Route>
         <Route element={<Home/>} path='/home'></Route>
+        <Route element={<Dashboard/>} path='/dashboard'></Route>
         <Route element={<Tracker/>} path='/tracker'></Route>
         <Route element={<Blog/>} path='/blog'></Route>
         <Route element={<BlogContent/>} path='/blogContent'></Route>
