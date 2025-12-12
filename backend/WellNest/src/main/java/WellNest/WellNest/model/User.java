@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document(collection = "users")   // 🔥 changed
+@Document(collection = "users") 
 public class User {
 
     @Id
@@ -13,9 +13,4 @@ public class User {
     private String email;
     private String userType;
     private long timestamp;
-    private String name;
-    private int age;
-    private double weight;
-    private double height;
-    private String fitnessGoals;
 }

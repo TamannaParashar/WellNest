@@ -7,6 +7,7 @@ import Community from './Components/Community'
 import Trainers from './Components/Trainers'
 import Profile from './Components/Profile'
 import Home from './Components/Home'
+import Tracker from './Components/Tracker'
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
         <Route element={<Login/>} path='/'></Route>
         <Route element={<Profile/>} path='/profile'></Route>
         <Route element={<Home/>} path='/home'></Route>
+        <Route element={<Tracker/>} path='/tracker'></Route>
         <Route element={<Blog/>} path='/blog'></Route>
         <Route element={<BlogContent/>} path='/blogContent'></Route>
         <Route element={<Community/>} path='/community-post'></Route>
