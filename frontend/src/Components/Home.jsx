@@ -41,8 +41,12 @@ export default function Home() {
     const w = Number(weight)
 
     if (!h || !w) {
-      alert("Please enter valid height and weight.")
+      alert("Please enter valid height and weight.");
       return
+    }
+    if(h<=0 || w<=0){
+      alert("Height or weight cannot be negative.");
+      return;
     }
 
     const heightInMeters = h / 100

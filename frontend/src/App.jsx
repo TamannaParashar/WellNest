@@ -8,6 +8,7 @@ import Trainers from './Components/Trainers'
 import Profile from './Components/Profile'
 import Home from './Components/Home'
 import Tracker from './Components/Tracker'
+import ViewLog from './Components/ViewLog'
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
         <Route element={<BlogContent/>} path='/blogContent'></Route>
         <Route element={<Community/>} path='/community-post'></Route>
         <Route element={<Trainers/>} path='/trainers'></Route>
+        <Route element={<ViewLog/>} path='/view-log'></Route>
       </Routes>
     </BrowserRouter>
   )

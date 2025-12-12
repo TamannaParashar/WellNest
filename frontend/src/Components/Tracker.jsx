@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react"
 import { Activity, Utensils, Droplet, Moon, Plus, Trash2, Calendar, TrendingUp } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useUser } from "@clerk/clerk-react"
 
 export default function Tracker() {
   const { user } = useUser();
+  const navigate = useNavigate();
+
   const [activeTab, setActiveTab] = useState("workout")
   const [workouts, setWorkouts] = useState([])
   const [workoutForm, setWorkoutForm] = useState({ exerciseType: "", duration: "", calories: "" })
@@ -29,7 +31,6 @@ export default function Tracker() {
         // encode email to avoid special character issues
         const response = await fetch(`http://localhost:8080/api/tracker/email/${encodeURIComponent(email)}`);
         if (!response.ok) {
-          // try to read error body if present
           let errBody = null;
           try { errBody = await response.json(); } catch (_) {}
           throw new Error(errBody?.message || `Failed to fetch tracker: ${response.status}`);
@@ -202,10 +203,17 @@ export default function Tracker() {
       console.log("Saved!", respBody);
       alert("Daily log saved!");
       setIsSaved(true);
+      navigate("/view-log", { state: { tracker: respBody } });
     } catch (error) {
       console.error(error);
       alert("Failed to save log");
     }
+  };
+
+  // navigate to a view page (route must exist in your app)
+  const viewLog = () => {
+    if (!isSaved) return;
+    navigate(`/view-log`);
   };
 
   return (
@@ -426,7 +434,7 @@ export default function Tracker() {
                       placeholder="15"
                       value={mealForm.fats}
                       onChange={(e) => setMealForm({ ...mealForm, fats: e.target.value })}
-                      className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                      className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus;border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -674,10 +682,30 @@ export default function Tracker() {
             )}
           </div>
         )}
-        <div className="flex justify-center">
-           <button
+
+        <div className="flex justify-center gap-4">
+          <button
             disabled={isSaved}
-            className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg ${isSaved? "bg-gray-600 text-gray-300 cursor-not-allowed": "bg-green-500 text-black hover:bg-green-400 shadow-green-500/50"}`}onClick={saveTracker}>{isSaved ? "Daily Log Already Saved" : "Daily Log"}</button>
+            className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg ${isSaved ? "bg-gray-600 text-gray-300 cursor-not-allowed" : "bg-green-500 text-black hover:bg-green-400 shadow-green-500/50"}`}
+            onClick={saveTracker}
+          >
+            {isSaved ? "Daily Log Already Saved" : "Daily Log"}
+          </button>
+
+          {/* View Log button: enabled only when a saved log exists (isSaved === true) */}
+          <button
+            onClick={viewLog}
+            disabled={!isSaved}
+            aria-disabled={!isSaved}
+            className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg ${
+              !isSaved
+                ? "bg-gray-700 text-gray-300 cursor-not-allowed"
+                : "bg-green-500 text-black hover:bg-green-400 shadow-green-500/50"
+            }`}
+            title={!isSaved ? "No saved log for today" : "View today's saved log"}
+          >
+            View log
+          </button>
         </div>
       </main>
     </div>
