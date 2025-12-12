@@ -50,7 +50,7 @@ export default function Login() {
       });
       if (result.status === "complete") {
         localStorage.setItem("userEmail", email);
-        navigate("/profile");
+        navigate("/home");
         console.log(`Logged in as ${activeTab}`);
       }
       const res = await fetch("http://localhost:8080/api/users",{
@@ -121,7 +121,7 @@ export default function Login() {
       setIsVerifying(false);
       setEmail("");
       setPassword("");
-      navigate("/profile");
+      navigate("/home");
     }
 
   } catch (err) {
@@ -144,7 +144,7 @@ const handleResetVerification=async(e)=>{
     setResetVerifying(false);
     setEmail("");
     setPassword("");
-    navigate("/profile");
+    navigate("/home");
   } catch (err) {
     alert(err.errors?.[0]?.longMessage || "Invalid code");
   } finally {
