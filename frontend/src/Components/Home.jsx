@@ -2,7 +2,7 @@ import {useState,useEffect} from "react"
 import {SignOutButton, useUser} from "@clerk/clerk-react"
 import {Link,useNavigate} from "react-router-dom"
 import {Menu, X, Activity, Heart, Target, Droplet, Moon, Utensils, TrendingUp} from "lucide-react"
-
+import healthTips from "../../healthTips.json"
 
 export default function Home() {
   const [isNavOpen, setIsNavOpen] = useState(false)
@@ -11,6 +11,7 @@ export default function Home() {
   const [weight, setWeight] = useState("")
   const [bmiResult, setBmiResult] = useState({ bmi: 0, category: "", advice: "" })
   const [hasProfile, setHasProfile] = useState(false)
+  const [dailyTip, setDailyTip] = useState("")
   const { user } = useUser();
   const navigate = useNavigate();
 
@@ -34,6 +35,31 @@ export default function Home() {
 
     checkProfile()
   }, [user])
+
+  useEffect(() => {
+  const ONE_DAY = 24 * 60 * 60 * 1000
+
+  const savedTip = localStorage.getItem("dailyHealthTip")
+  const savedTime = localStorage.getItem("dailyHealthTipTime")
+  const now = Date.now()
+
+  const isValidTip =
+    savedTip &&
+    savedTip !== "undefined" &&
+    healthTips.includes(savedTip)
+
+  if (!isValidTip || !savedTime || now - Number(savedTime) > ONE_DAY) {
+    const randomIndex = Math.floor(Math.random() * healthTips.length)
+    const newTip = healthTips[randomIndex]
+
+    localStorage.setItem("dailyHealthTip", newTip)
+    localStorage.setItem("dailyHealthTipTime", now.toString())
+
+    setDailyTip(newTip)
+  } else {
+    setDailyTip(savedTip)
+  }
+}, [])
 
   const calculateBMI = () => {
     const h = Number(height)
@@ -90,7 +116,7 @@ export default function Home() {
               <Link to="/community-post" className="text-gray-300 hover:text-green-500 transition-colors font-medium">
                 Comminuty Posts
               </Link>
-              <Link to="/trainer" className="text-gray-300 hover:text-green-500 transition-colors font-medium">
+              <Link to="/trainers" className="text-gray-300 hover:text-green-500 transition-colors font-medium">
                 Trainers
               </Link>
               <button
@@ -220,6 +246,20 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Daily Health Tip */}
+        {dailyTip && (
+          <section className="mt-12 mb-16">
+            <div className="bg-black border-2 border-green-500 rounded-2xl p-6 max-w-3xl mx-auto text-center shadow-lg shadow-green-500/20">
+              <h2 className="text-2xl font-bold text-green-500 mb-3">
+                 Daily Health Tip
+              </h2>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                {dailyTip}
+              </p>
+            </div>
+          </section>
+        )}
+
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 gap-10 mt-16">
           {/* Health Blog */}
@@ -309,25 +349,6 @@ export default function Home() {
               </li>
             </ul>
           </div>
-        </div>
-
-        {/* Goal Progress Section */}
-        <div className="mt-8 bg-gradient-to-br from-green-500/10 to-green-500/5 border-2 border-green-500/30 rounded-2xl p-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-green-500/20 rounded-lg">
-              <Target className="w-8 h-8 text-green-500" />
-            </div>
-            <h2 className="text-3xl font-bold text-green-500">Goal Progress Tracking</h2>
-          </div>
-          <p className="text-gray-300 leading-relaxed mb-4 text-lg">
-            Set fitness goals such as weight loss, muscle gain, calorie limits, hydration, or workout targets — and
-            track how close you are to achieving them.
-          </p>
-          <p className="text-gray-400">
-            The system compares your <span className="text-green-500 font-semibold">current logged data</span> with your
-            <span className="text-green-500 font-semibold"> fitness goals</span> and shows progress, trends, and
-            remaining targets.
-          </p>
         </div>
 
         {/* Trackers Section */}
