@@ -19,7 +19,7 @@ export default function Dashboard() {
     totalCaloriesBurned: 0,
     totalCaloriesConsumed: 0,
     totalWater: 0,
-    avgSleep: 0,
+    totalSleep: 0,
   })
 
   useEffect(() => {
@@ -97,17 +97,16 @@ export default function Dashboard() {
 
         setWeekData(formatted)
 
-        // Calculate weekly summary
         const totalCaloriesBurned = formatted.reduce((sum, d) => sum + d.caloriesBurned, 0)
         const totalCaloriesConsumed = formatted.reduce((sum, d) => sum + d.caloriesConsumed, 0)
         const totalWater = formatted.reduce((sum, d) => sum + d.water, 0)
-        const avgSleep = (formatted.reduce((sum, d) => sum + d.sleep, 0) / 7).toFixed(1)
+        const totalSleep = formatted.reduce((sum, d) => sum + d.sleep, 0)
 
         setWeekSummary({
           totalCaloriesBurned,
           totalCaloriesConsumed,
           totalWater,
-          avgSleep,
+          totalSleep,
         })
       } catch (err) {
         console.error("Error:", err)
@@ -248,10 +247,10 @@ export default function Dashboard() {
               <div className="p-3 bg-purple-500/20 rounded-xl">
                 <Moon className="w-6 h-6 text-purple-500" />
               </div>
-              <span className="text-purple-500 text-sm font-semibold">Average</span>
+              <span className="text-purple-500 text-sm font-semibold">Total</span>
             </div>
-            <p className="text-3xl font-bold text-white mb-1">{weekSummary.avgSleep}h</p>
-            <p className="text-gray-500 text-sm">Sleep per Night</p>
+            <p className="text-3xl font-bold text-white mb-1">{weekSummary.totalSleep}h</p>
+            <p className="text-gray-500 text-sm">Sleep</p>
           </div>
         </div>
 
@@ -329,7 +328,7 @@ export default function Dashboard() {
               <div className="p-2 bg-blue-500/20 rounded-lg">
                 <Droplet className="w-5 h-5 text-blue-500" />
               </div>
-              <h3 className="text-xl font-bold text-white">Water Intake (ml)</h3>
+              <h3 className="text-xl font-bold text-white">Water Intake (L)</h3>
             </div>
             <div className="h-80">
               <Bar
@@ -337,7 +336,7 @@ export default function Dashboard() {
                   labels,
                   datasets: [
                     {
-                      label: "Water (ml)",
+                      label: "Water (L)",
                       data: water,
                       backgroundColor: "rgba(59, 130, 246, 0.8)",
                       borderColor: "rgb(59, 130, 246)",

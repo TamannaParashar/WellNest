@@ -166,7 +166,7 @@ const today = new Date().toISOString().split("T")[0]
               <h3 className="text-sm font-semibold text-gray-400">Water Intake</h3>
             </div>
             <p className="text-3xl font-bold text-white">{totals.totalWater}</p>
-            <p className="text-sm text-gray-500 mt-1">ml</p>
+            <p className="text-sm text-gray-500 mt-1">L</p>
           </div>
 
           <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-6">
@@ -335,7 +335,7 @@ const today = new Date().toISOString().split("T")[0]
                       <Droplet className="w-5 h-5 text-green-500" />
                       <span className="text-gray-500 text-sm">Amount</span>
                     </div>
-                    <p className="text-2xl font-bold text-white">{water.amount} ml</p>
+                    <p className="text-2xl font-bold text-white">{water.amount} L</p>
                   </div>
                   {water.notes && (
                     <div className="pt-3 border-t border-green-500/10">

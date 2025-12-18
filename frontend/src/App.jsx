@@ -10,15 +10,17 @@ import Home from './Components/Home'
 import Tracker from './Components/Tracker'
 import ViewLog from './Components/ViewLog'
 import Dashboard from './Components/Dashboard'
+import { useUser } from '@clerk/clerk-react'
+import ProtectedRoute from './Components/ProtectedRoute'
 
 function App() {
-
+const {isSignedIn} = useUser();
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<Login/>} path='/'></Route>
         <Route element={<Profile/>} path='/profile'></Route>
-        <Route element={<Home/>} path='/home'></Route>
+        <Route element={<ProtectedRoute isSignedIn={isSignedIn}><Home/></ProtectedRoute>} path='/home'></Route>
         <Route element={<Dashboard/>} path='/dashboard'></Route>
         <Route element={<Tracker/>} path='/tracker'></Route>
         <Route element={<Blog/>} path='/blog'></Route>

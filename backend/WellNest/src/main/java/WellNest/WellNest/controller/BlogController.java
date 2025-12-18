@@ -77,7 +77,6 @@ public class BlogController {
         return service.unlikeBlog(body.get("blogId"), body.get("userId"));
     }
 
-    // FIXED COMMENT ENDPOINT
     @PostMapping("/comment")
     public List<Comment> addComment(@RequestBody Map<String, String> body) {
 

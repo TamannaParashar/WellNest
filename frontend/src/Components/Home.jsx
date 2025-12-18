@@ -111,10 +111,7 @@ export default function Home() {
                 Dashboard
               </Link>
               <Link to="/blog" className="text-gray-300 hover:text-green-500 transition-colors font-medium">
-                Blogs
-              </Link>
-              <Link to="/community-post" className="text-gray-300 hover:text-green-500 transition-colors font-medium">
-                Comminuty Posts
+                Nutrition
               </Link>
               <Link to="/trainers" className="text-gray-300 hover:text-green-500 transition-colors font-medium">
                 Trainers
@@ -248,17 +245,36 @@ export default function Home() {
 
         {/* Daily Health Tip */}
         {dailyTip && (
-          <section className="mt-12 mb-16">
-            <div className="bg-black border-2 border-green-500 rounded-2xl p-6 max-w-3xl mx-auto text-center shadow-lg shadow-green-500/20">
-              <h2 className="text-2xl font-bold text-green-500 mb-3">
-                 Daily Health Tip
-              </h2>
-              <p className="text-gray-300 text-lg leading-relaxed">
-                {dailyTip}
-              </p>
-            </div>
-          </section>
-        )}
+  <section className="mt-12 mb-16">
+    <div className="relative max-w-3xl mx-auto rounded-2xl overflow-hidden border-2 border-green-500 shadow-lg shadow-green-500/20">
+
+      {/* Blurred Background Image */}
+      <img
+        src="/tipBG.png"
+        alt="Health background"
+        className="absolute inset-0 w-full h-full object-coverif(curr.left!=null){
+                    q.add(curr.left);
+                } scale-110"
+      />
+
+      {/* Dark overlay for better text contrast */}
+      <div className="absolute inset-0 bg-black/60"></div>
+
+      {/* Content */}
+      <div className="relative p-6 text-center">
+        <h2 className="text-2xl font-bold text-green-500 mb-3">
+          Daily Health Tip
+        </h2>
+
+        <p className="text-gray-200 text-lg leading-relaxed">
+          {dailyTip}
+        </p>
+      </div>
+
+    </div>
+  </section>
+)}
+
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 gap-10 mt-16">

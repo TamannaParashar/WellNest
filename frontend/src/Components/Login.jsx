@@ -50,7 +50,7 @@ export default function Login() {
       });
       if (result.status === "complete") {
         localStorage.setItem("userEmail", email);
-        navigate("/home");
+        window.location.href = "/home";
         console.log(`Logged in as ${activeTab}`);
       }
       const res = await fetch("http://localhost:8080/api/users",{
@@ -141,10 +141,10 @@ const handleResetVerification=async(e)=>{
     await signIn.attemptFirstFactor({strategy:"reset_password_email_code",code})
     await signIn.resetPassword({password:newPswd})
     alert("Password has been reset! You can now log in.");
+    window.location.href = "/home";
     setResetVerifying(false);
     setEmail("");
     setPassword("");
-    navigate("/home");
   } catch (err) {
     alert(err.errors?.[0]?.longMessage || "Invalid code");
   } finally {
@@ -167,7 +167,7 @@ const handleResetVerification=async(e)=>{
           <div className="flex flex-col justify-center p-8 lg:p-10">
             <div className="mb-8">
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                Welcome to <span className="text-emerald-600">WellNest</span>
+                Welcome to <span className="text-green-500">WellNest</span>
               </h1>
             </div>
 
@@ -178,7 +178,7 @@ const handleResetVerification=async(e)=>{
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-6 py-2 rounded-md font-semibold text-sm transition-all duration-300 ${
-                    activeTab === tab ? "bg-emerald-600 text-white shadow-md" : "text-gray-600 hover:text-gray-900"
+                    activeTab === tab ? "bg-green-500 text-white shadow-md" : "text-gray-600 hover:text-gray-900"
                   }`}
                 >
                   {tab === "user" ? "User" : "Trainer"}
@@ -215,7 +215,7 @@ const handleResetVerification=async(e)=>{
 
               {/* Forgot Password */}
               <div className="flex justify-end">
-                <button onClick={handleForgotPassword} className="text-sm text-emerald-600 hover:text-emerald-700 font-semibold">
+                <button onClick={handleForgotPassword} className="text-sm text-green-500 hover:text-emerald-700 font-semibold">
                   Forgot password?
                 </button>
               </div>
@@ -225,7 +225,7 @@ const handleResetVerification=async(e)=>{
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-70"
+                  className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-70"
                 >
                   {isLoading ? "Logging in..." : `Login as ${activeTab === "user" ? "User" : "Trainer"}`}
                 </button>
@@ -242,7 +242,7 @@ const handleResetVerification=async(e)=>{
             {/* Create Account */}
             <p className="text-center text-gray-600">
               Don't have an account?{" "}
-              <button onClick={handleCreateAccount} className="text-emerald-600 font-semibold hover:text-emerald-700">
+              <button onClick={handleCreateAccount} className="text-green-500 font-semibold hover:text-emerald-700">
                 Create Account
               </button>
             </p>

@@ -2,7 +2,6 @@
 import { useUser } from "@clerk/clerk-react"
 import { useState, useEffect } from "react"
 import { Upload, Menu, X, Heart, MessageCircle } from "lucide-react"
-import { SignOutButton } from "@clerk/clerk-react"
 import { useNavigate, Link} from "react-router-dom"
 
 export default function Blog() {
@@ -212,11 +211,7 @@ const handleAddComment = async (blogId) => {
               <h1 className="text-2xl font-bold text-green-500">WellNest</h1>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <SignOutButton>
-                <button className="text-white hover:text-green-500 transition-colors">Sign Out</button>
-              </SignOutButton>
               <Link to="/community-post" className="text-white hover:text-green-500 transition-colors">Community Post</Link>
-              <Link to="/trainers" className="text-white hover:text-green-500 transition-colors">Trainers</Link>
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="inline-flex items-center gap-2 bg-green-500 text-black px-6 py-2 rounded-lg hover:bg-green-600 transition-colors font-semibold text-lg"

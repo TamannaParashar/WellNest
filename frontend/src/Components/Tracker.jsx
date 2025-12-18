@@ -17,7 +17,7 @@ export default function Tracker() {
   const [waterIntake, setWaterIntake] = useState([])
   const [waterForm, setWaterForm] = useState({ amount: "", notes: "" })
   const [sleepLog, setSleepLog] = useState([])
-  const [sleepForm, setSleepForm] = useState({ hours: "", quality: "", notes: "" })
+  const [sleepForm, setSleepForm] = useState({ hours: "", notes: "" })
   const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
@@ -68,6 +68,13 @@ export default function Tracker() {
   // Helper to get today's ISO date string
   const isoToday = () => new Date().toISOString().slice(0, 10);
 
+  const deriveSleepQuality = (hours) => {
+      if (hours < 5) return "Poor"
+      if (hours < 7) return "Fair"
+      if (hours < 8) return "Good"
+      return "Excellent"
+    }
+    
   // --- ADD FUNCTIONS ---
   const addWorkout = () => {
     const durationNum = Number(workoutForm.duration);
@@ -135,27 +142,36 @@ export default function Tracker() {
 
   const deleteWater = (id) => setWaterIntake(waterIntake.filter(w => w.id !== id));
 
-  const addSleep = () => {
-    const hoursNum = Number(sleepForm.hours);
-    if (!sleepForm.hours) {
-      alert("Please enter sleep duration")
-      return
-    }
-    if (hoursNum < 0) {
-      alert("Sleep hours cannot be negative")
-      return
-    }
+ const addSleep = () => {
+  const hoursNum = Number(sleepForm.hours)
 
-    setSleepLog([
-      ...sleepLog,
-      { id: Date.now(), ...sleepForm, date: isoToday() },
-    ])
-    setSleepForm({ hours: "", quality: "", notes: "" })
+  if (!sleepForm.hours) {
+    alert("Please enter sleep duration")
+    return
   }
 
+  if (hoursNum < 0) {
+    alert("Sleep hours cannot be negative")
+    return
+  }
+
+  const quality = deriveSleepQuality(hoursNum)
+
+  setSleepLog([
+    ...sleepLog,
+    {
+      id: Date.now(),
+      hours: hoursNum,
+      quality,
+      notes: sleepForm.notes,
+      date: isoToday(),
+    },
+  ])
+
+  setSleepForm({ hours: "", notes: "" })
+}
   const deleteSleep = (id) => setSleepLog(sleepLog.filter(s => s.id !== id));
 
-  // --- SAVE TRACKER ---
   const saveTracker = async () => {
     if (isSaved) {
       alert("You have already saved today's log.");
@@ -608,20 +624,6 @@ export default function Tracker() {
                     onChange={(e) => setSleepForm({ ...sleepForm, hours: e.target.value })}
                     className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-green-500 mb-2">Sleep Quality</label>
-                  <select
-                    value={sleepForm.quality}
-                    onChange={(e) => setSleepForm({ ...sleepForm, quality: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
-                  >
-                    <option value="">Rate Quality</option>
-                    <option value="Excellent">Excellent</option>
-                    <option value="Good">Good</option>
-                    <option value="Fair">Fair</option>
-                    <option value="Poor">Poor</option>
-                  </select>
                 </div>
               </div>
 
