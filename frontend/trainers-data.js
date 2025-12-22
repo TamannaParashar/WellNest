@@ -1,14 +1,14 @@
 export const trainersData = [
   {
     id: 1,
-    name: "Alex Johnson",
+    name: "Biswajit Thakur",
     title: "Muscle Gain Specialist",
     image: "/muscle.jpg",
-    bio: "Alex has 8 years of experience in strength training and muscle development. He specializes in creating personalized workout plans for clients looking to build lean muscle mass.",
+    bio: "Biswajit has 8 years of experience in strength training and muscle development. He specializes in creating personalized workout plans for clients looking to build lean muscle mass.",
     expertise: ["Muscle Gain", "Strength Training", "Bodybuilding"],
     availability: "Mon-Fri: 6AM-8PM, Sat-Sun: 8AM-6PM",
     certifications: ["NASM Certified", "ISSA Strength Coach", "Nutrition Specialist"],
-    email: "alex.johnson@gym.com",
+    email: "ranathakur345@gmail.com",
     phone: "+91-8712309645",
   },
   {
@@ -37,14 +37,14 @@ export const trainersData = [
   },
   {
     id: 4,
-    name: "Emma Wilson",
+    name: "Tam Sharma",
     title: "Yoga & Flexibility Expert",
     image: "/yoga.jpeg",
     bio: "Emma teaches transformative yoga classes that improve flexibility, mental health, and overall wellbeing. Her calming approach makes yoga accessible to beginners and advanced practitioners alike.",
     expertise: ["Yoga", "Flexibility", "Mindfulness", "Stress Relief"],
     availability: "Mon-Fri: 6AM-12PM, 4PM-8PM, Sat-Sun: 8AM-2PM",
     certifications: ["RYT 200 Yoga Instructor", "Pilates Certified", "Meditation Coach"],
-    email: "emma.wilson@gym.com",
+    email: "iamtam.3003@gmail.com",
     phone: "+91-8989765463",
   },
   {

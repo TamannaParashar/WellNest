@@ -51,7 +51,11 @@ export default function Login() {
       });
       if (result.status === "complete") {
         localStorage.setItem("userEmail", email);
+        if (activeTab === "user") {
         window.location.href = "/home";
+      } else if (activeTab === "trainer") {
+        window.location.href = "/trainerDashboard";
+      }
         console.log(`Logged in as ${activeTab}`);
       }
       const res = await fetch("http://localhost:8080/api/users",{
@@ -240,19 +244,21 @@ const handleResetVerification=async(e)=>{
             </form>
 
             {/* Divider */}
+            {activeTab === "user" && (
             <div className="flex items-center gap-3 my-6">
               <div className="flex-1 h-px bg-gray-300" />
               <span className="text-xs text-gray-500">OR</span>
               <div className="flex-1 h-px bg-gray-300" />
-            </div>
+            </div>)}
 
             {/* Create Account */}
+            {activeTab === "user" && (
             <p className="text-center text-gray-600">
               Don't have an account?{" "}
               <button onClick={handleCreateAccount} className="text-green-500 font-semibold hover:text-emerald-700">
                 Create Account
               </button>
-            </p>
+            </p>)}
           </div>
         </div>
       </div>

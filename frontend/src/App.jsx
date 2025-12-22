@@ -12,6 +12,9 @@ import ViewLog from './Components/ViewLog'
 import Dashboard from './Components/Dashboard'
 import { useUser } from '@clerk/clerk-react'
 import ProtectedRoute from './Components/ProtectedRoute'
+import TrainerBlog from './Components/TrainerBlog'
+import TrainerDashboard from './Components/TrainerDashBoard'
+import TrainerTalk from './Components/TrainerTalk'
 
 function App() {
 const {isSignedIn} = useUser();
@@ -24,6 +27,9 @@ const {isSignedIn} = useUser();
         <Route element={<Dashboard/>} path='/dashboard'></Route>
         <Route element={<Tracker/>} path='/tracker'></Route>
         <Route element={<Blog/>} path='/blog'></Route>
+        <Route element={<TrainerDashboard/>} path='/trainerDashboard'></Route>
+        <Route element={<TrainerTalk/>} path='/trainerTalk'></Route>
+        <Route element={<TrainerBlog/>} path='/trainerBlog'></Route>
         <Route element={<BlogContent/>} path='/blogContent'></Route>
         <Route element={<Community/>} path='/community-post'></Route>
         <Route element={<Trainers/>} path='/trainers'></Route>

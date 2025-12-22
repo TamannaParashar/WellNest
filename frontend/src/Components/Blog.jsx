@@ -9,7 +9,6 @@ export default function Blog() {
   const [isNavOpen, setIsNavOpen] = useState(false)
   const [formData, setFormData] = useState({
     title: "",
-    userType: "user",
     blogText: "",
     thumbnail: null,
     authorName: "",
@@ -99,7 +98,7 @@ export default function Blog() {
     data.append("authorName", formData.authorName)
     data.append("title", formData.title)
     data.append("content", formData.blogText)
-    data.append("userType", formData.userType)
+    data.append("userType", "user")
     data.append("thumbnail", formData.thumbnail)
 
     const res = await fetch("http://localhost:8080/api/blogs", {
@@ -114,7 +113,7 @@ export default function Blog() {
       [result.id]: { isOpen: false, newComment: "", comments: [] },
     }))
     setIsModalOpen(false)
-    setFormData({ title: "", userType: "user", blogText: "", thumbnail: null, authorName: "" })
+    setFormData({ title: "", blogText: "", thumbnail: null, authorName: "" })
     setThumbnailPreview(null)
   }
 
@@ -280,18 +279,6 @@ const handleAddComment = async (blogId) => {
                   placeholder="Enter your name"
                   className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 transition-colors placeholder-gray-500"
                 />
-              </div>
-              <div>
-                <label className="block text-white font-semibold mb-2">Upload Blog As *</label>
-                <select
-                  name="userType"
-                  value={formData.userType}
-                  onChange={handleInputChange}
-                  className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 transition-colors"
-                >
-                  <option value="user">User</option>
-                  <option value="trainer">Trainer</option>
-                </select>
               </div>
               <div>
                 <label className="block text-white font-semibold mb-2">Blog Content *</label>

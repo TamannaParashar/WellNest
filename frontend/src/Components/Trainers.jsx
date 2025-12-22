@@ -3,10 +3,12 @@
 import { useState, useMemo } from "react"
 import { Search } from "lucide-react"
 import { trainersData } from "../../trainers-data"
+import { useUser } from "@clerk/clerk-react"
 
 export default function Trainers() {
   const [selectedTrainer, setSelectedTrainer] = useState(trainersData[0])
   const [searchQuery, setSearchQuery] = useState("")
+  const { user, isLoaded } = useUser()
 
   // Filter trainers based on search query matching expertise keywords
   const filteredTrainers = useMemo(() => {
@@ -19,6 +21,41 @@ export default function Trainers() {
         trainer.name.toLowerCase().includes(query),
     )
   }, [searchQuery])
+
+  const handleRegister = async () => {
+  if (!isLoaded || !user) {
+    alert("Please sign in first")
+    return
+  }
+
+  try {
+    const email = user.primaryEmailAddress.emailAddress
+
+    // Save mapping only
+    const res = await fetch("http://localhost:8080/api/trainer-clients/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        trainerId: selectedTrainer.id,
+        trainerName: selectedTrainer.name,
+        trainerEmail: selectedTrainer.email,
+        trainerPhone: selectedTrainer.phone || "",
+        trainerTitle: selectedTrainer.title || "",
+        trainerBio: selectedTrainer.bio || "",
+        trainerExpertise: selectedTrainer.expertise?.join(",") || "",
+        trainerCertification: selectedTrainer.certifications?.join(",") || "",
+        clientEmail: email,
+      }),
+    })
+
+    if (!res.ok) throw new Error("Already registered or error")
+
+    alert("Registered successfully!")
+  } catch (err) {
+    console.error(err)
+    alert("Registration failed")
+  }
+}
 
   // Update selected trainer if current selection is filtered out
   useMemo(() => {
@@ -156,6 +193,12 @@ export default function Trainers() {
                 </div>
               </div>
             </div>
+            <button
+      onClick={handleRegister}
+      className="mt-6 w-full bg-green-500 text-black font-semibold py-3 rounded-lg hover:bg-green-600 transition-colors"
+    >
+      Register
+    </button>
           </div>
         )}
       </div>
