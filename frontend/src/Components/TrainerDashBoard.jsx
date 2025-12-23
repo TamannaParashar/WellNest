@@ -81,7 +81,7 @@ export default function TrainerDashboard() {
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-gray-950/80 border-b border-green-500/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
-            Your Clients
+            WellNest
           </h1>
           <div className="flex items-center gap-4">
             <Link 
@@ -99,6 +99,11 @@ export default function TrainerDashboard() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="flex justify-center">
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+            Your Clients
+          </h1>
+        </div>
         {clients.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-20 h-20 rounded-full bg-gray-800 flex items-center justify-center mb-4">
@@ -164,8 +169,10 @@ export default function TrainerDashboard() {
                     </svg>
                     Contact
                   </a>
-
-                  {/* Assign Task */}
+                  <Link
+                    to={`/chat/${client.clientEmail}`}
+                    className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-400 text-black font-semibold py-2.5 rounded-xl transition-all"
+                    >💬 Chat</Link>
                   <div className="flex flex-col space-y-2">
                     <textarea
                       className="w-full p-3 rounded-xl bg-gray-800/70 border border-gray-700 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 resize-none transition-all duration-200"

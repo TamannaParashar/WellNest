@@ -4,6 +4,7 @@ import { useState, useMemo } from "react"
 import { Search } from "lucide-react"
 import { trainersData } from "../../trainers-data"
 import { useUser } from "@clerk/clerk-react"
+import { Link } from "react-router-dom"
 
 export default function Trainers() {
   const [selectedTrainer, setSelectedTrainer] = useState(trainersData[0])
@@ -65,7 +66,14 @@ export default function Trainers() {
   }, [filteredTrainers, selectedTrainer])
 
   return (
-    <main className="flex h-screen bg-black text-gray-100">
+    <div className="relative h-screen bg-black text-gray-100">
+    <Link
+      to="/trainerTalk"
+      className="absolute top-4 right-6 z-50 bg-green-500 text-black px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition"
+    >
+      Trainer Talk
+    </Link>
+  <main className="flex h-full">
       {/* Left Sidebar - Trainers List */}
       <div className="w-72 border-r border-green-900 bg-black overflow-y-auto flex flex-col">
         <div className="p-6 border-b border-green-900 space-y-4">
@@ -203,5 +211,6 @@ export default function Trainers() {
         )}
       </div>
     </main>
+    </div>
   )
 }

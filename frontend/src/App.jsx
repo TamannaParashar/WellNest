@@ -15,6 +15,8 @@ import ProtectedRoute from './Components/ProtectedRoute'
 import TrainerBlog from './Components/TrainerBlog'
 import TrainerDashboard from './Components/TrainerDashBoard'
 import TrainerTalk from './Components/TrainerTalk'
+import TrainerChat from './Components/TrainerChat'
+import ClientChat from './Components/ClientChat'
 
 function App() {
 const {isSignedIn} = useUser();
@@ -28,6 +30,8 @@ const {isSignedIn} = useUser();
         <Route element={<Tracker/>} path='/tracker'></Route>
         <Route element={<Blog/>} path='/blog'></Route>
         <Route element={<TrainerDashboard/>} path='/trainerDashboard'></Route>
+        <Route element={<TrainerChat/>} path='/chat/:clientEmail'></Route>
+        <Route element={<ClientChat />} path="/client/chat/:trainerEmail"></Route>
         <Route element={<TrainerTalk/>} path='/trainerTalk'></Route>
         <Route element={<TrainerBlog/>} path='/trainerBlog'></Route>
         <Route element={<BlogContent/>} path='/blogContent'></Route>
