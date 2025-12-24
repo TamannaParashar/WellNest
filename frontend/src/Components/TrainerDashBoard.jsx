@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { SignOutButton, useUser } from "@clerk/clerk-react"
+import { useUser } from "@clerk/clerk-react"
 import { Link } from "react-router-dom"
 
 export default function TrainerDashboard() {
@@ -83,17 +83,6 @@ export default function TrainerDashboard() {
           <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
             WellNest
           </h1>
-          <div className="flex items-center gap-4">
-            <Link 
-              to='/blog' 
-              className="px-4 py-2 text-green-400 hover:text-green-300 font-medium transition-colors duration-200"
-            >
-              Blog
-            </Link>
-            <div className="px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 hover:bg-green-500/20 transition-all duration-200 cursor-pointer">
-              <SignOutButton>Sign Out</SignOutButton>
-            </div>
-          </div>
         </div>
       </header>
 

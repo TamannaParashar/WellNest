@@ -17,6 +17,7 @@ import TrainerDashboard from './Components/TrainerDashBoard'
 import TrainerTalk from './Components/TrainerTalk'
 import TrainerChat from './Components/TrainerChat'
 import ClientChat from './Components/ClientChat'
+import TrainerHome from './Components/TrainerHome'
 
 function App() {
 const {isSignedIn} = useUser();
@@ -29,6 +30,7 @@ const {isSignedIn} = useUser();
         <Route element={<Dashboard/>} path='/dashboard'></Route>
         <Route element={<Tracker/>} path='/tracker'></Route>
         <Route element={<Blog/>} path='/blog'></Route>
+        <Route element={<TrainerHome/>} path='/trainer-home'></Route>
         <Route element={<TrainerDashboard/>} path='/trainerDashboard'></Route>
         <Route element={<TrainerChat/>} path='/chat/:clientEmail'></Route>
         <Route element={<ClientChat />} path="/client/chat/:trainerEmail"></Route>

@@ -54,7 +54,7 @@ export default function Login() {
         if (activeTab === "user") {
         window.location.href = "/home";
       } else if (activeTab === "trainer") {
-        window.location.href = "/trainerDashboard";
+        window.location.href = "/trainer-home";
       }
         console.log(`Logged in as ${activeTab}`);
       }
