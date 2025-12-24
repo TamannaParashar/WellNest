@@ -41,6 +41,16 @@ export default function TrainerDashboard() {
     fetchClients()
   }, [isLoaded, user])
 
+  const scheduleMeeting = () => {
+  const meetWindow = window.open("https://meet.google.com/new", "_blank");
+  if (meetWindow) {
+    alert("A new Google Meet has opened. Copy the link from the address bar to share it with your client.");
+  } else {
+    alert("Please allow pop-ups to schedule a meeting.");
+  }
+};
+
+
   const handleTaskChange = (clientEmail, value) => {
     setTasks(prev => ({ ...prev, [clientEmail]: value }))
   }
@@ -136,7 +146,7 @@ export default function TrainerDashboard() {
                       </div>
                       <div className="bg-gray-800/50 rounded-lg px-3 py-2">
                         <p className="text-gray-500 text-xs uppercase tracking-wide">Goals</p>
-                        <p className="text-gray-200 font-medium text-sm truncate">{client.profile.fitnessGoals || "N/A"}</p>
+                        <p className="text-gray-200 font-medium text-sm">{client.profile.fitnessGoals || "N/A"}</p>
                       </div>
                     </div>
                   ) : (
@@ -182,12 +192,12 @@ export default function TrainerDashboard() {
                   </div>
 
                   {/* Schedule Meeting */}
-                  <div className="flex items-center justify-center gap-2 bg-gray-800/50 border border-gray-700 text-gray-400 py-2.5 rounded-xl cursor-not-allowed">
+                  <button className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 border border-green-500/30 hover:border-green-500/50 text-green-400 font-medium py-2.5 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]" onClick={scheduleMeeting}>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Schedule Meeting (Coming Soon)
-                  </div>
+                    Schedule Meeting
+                  </button>
                 </div>
               </div>
             ))}
