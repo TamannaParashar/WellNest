@@ -10,9 +10,9 @@ export default function ClientChat() {
 
   const [messages, setMessages] = useState([])
   const [text, setText] = useState("")
+  const [trainerName,setTrainerName] = useState("")
   const messagesEndRef = useRef(null)
 
-  // ✅ ALWAYS define hooks unconditionally
   useEffect(() => {
     if (!isLoaded || !user || !trainerEmail) return
 
@@ -24,13 +24,21 @@ export default function ClientChat() {
       .catch(console.error)
   }, [isLoaded, user, trainerEmail])
 
+  useEffect(()=>{
+  const fetchName=async()=>{
+      const data = await fetch(`http://localhost:8080/api/trainer-clients/trainer/${trainerEmail}`)
+      const res = await data.json();
+      setTrainerName(res[0].trainerName);
+    }
+    fetchName();
+  },[user,isLoaded]);
+
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
   }, [messages])
-
-  // ✅ SAFE conditional rendering
+  
   if (!isLoaded) {
     return <div className="text-white p-6">Loading chat...</div>
   }
@@ -92,9 +100,8 @@ export default function ClientChat() {
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-gray-100">
-                  {trainerEmail?.split("@")[0] || "Trainer"}
+                  {trainerName}
                 </h1>
-                <p className="text-xs text-gray-500">{trainerEmail}</p>
               </div>
             </div>
           </div>

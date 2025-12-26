@@ -10,6 +10,7 @@ export default function TrainerChat() {
 
   const [messages, setMessages] = useState([])
   const [text, setText] = useState("")
+  const [clientName,setClientName] = useState("");
   const messagesEndRef = useRef(null)
 
   const trainerEmail = user?.primaryEmailAddress?.emailAddress || ""
@@ -22,7 +23,6 @@ export default function TrainerChat() {
 
   useEffect(() => {
     if (!trainerEmail || !clientEmail) return
-
     fetch(`http://localhost:8080/api/chat/${trainerEmail}/${clientEmail}`)
       .then(res => res.json())
       .then(setMessages)
@@ -32,6 +32,16 @@ export default function TrainerChat() {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  useEffect(()=>{
+    if(!clientEmail)return;
+    const getClientName =async()=>{
+      const data = await fetch(`http://localhost:8080/api/user-profile/${clientEmail}`)
+      const res = await data.json();
+      setClientName(res.name);
+    }
+    getClientName();
+  },[clientEmail])
 
   const sendMessage = async () => {
     if (!text.trim()) return
@@ -84,9 +94,8 @@ export default function TrainerChat() {
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-gray-100">
-                  {clientEmail?.split("@")[0] || "Client"}
+                  {clientName}
                 </h1>
-                <p className="text-xs text-gray-500">{clientEmail}</p>
               </div>
             </div>
           </div>
