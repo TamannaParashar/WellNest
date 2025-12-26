@@ -16,8 +16,8 @@ public class TrainerClient {
     private String trainerPhone;
     private String trainerTitle;
     private String trainerBio;
-    private String trainerExpertise;       // comma-separated
-    private String trainerCertification;   // comma-separated
+    private String trainerExpertise;      
+    private String trainerCertification;  
     private String clientEmail;
     private LocalDateTime registeredAt;
 

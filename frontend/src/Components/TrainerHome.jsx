@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { SignOutButton, useUser } from "@clerk/clerk-react"
 import { Link } from "react-router-dom"
 import {Menu,X,Activity,Users,ClipboardList,Calendar,MessageCircle,FileText,User} from "lucide-react"
@@ -9,15 +9,22 @@ export default function TrainerHome() {
   const [trainerProfile,setTrainerProfile] = useState(null);
   const [trainersName,setTrainerName] = useState("")
   const [trainerProfileModule,setTrainerProfileModule] = useState(false);
-  if(!isLoaded) return <div className="text-center mt-20 text-green-500 align-middle text-3xl">Loading...</div>
-  const email = user.primaryEmailAddress.emailAddress
+  useEffect(()=>{
+    if(!user || !isLoaded){
+      return;
+    }
+    const email = user.primaryEmailAddress.emailAddress
+    const fetchProfile=async()=>{
+      const data = await fetch(`http://localhost:8080/api/trainer-clients/trainer/${email}`)
+      const res = await data.json();
+      setTrainerProfile(res[0]);
+      setTrainerName(res[0].trainerName);
+    }
+    fetchProfile();
+  },[user,isLoaded]);
   const getProfile=async()=>{
-    const data = await fetch(`http://localhost:8080/api/trainer-clients/trainer/${email}`)
-    const res = await data.json();
     document.body.style.overflow = "hidden"
-    setTrainerProfile(res[0]);
     setTrainerProfileModule(true);
-    setTrainerName(res[0].trainerName)
   }
   const closeProfileModal = () => {
     setTrainerProfileModule(false);
@@ -71,7 +78,7 @@ export default function TrainerHome() {
         {/* Hero */}
         <section className="text-center py-16">
           <h1 className="text-5xl font-bold text-green-500">
-            Welcome {trainerProfile?trainersName:" Trainer"}
+            Welcome {trainersName}
           </h1>
           <p className="text-gray-300 mt-4 max-w-3xl mx-auto">
             Manage your clients, assign workouts, publish blogs, schedule sessions,
