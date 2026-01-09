@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Document(collection = "user_profile")
+
 public class UserProfile {
 
     @Id
@@ -15,5 +16,7 @@ public class UserProfile {
     private int age;
     private double weight;
     private double height;
-    private String fitnessGoals;
+    private int goalSteps;         
+    private int goalCalories;          
+    private int goalExerciseMinutes; 
 }

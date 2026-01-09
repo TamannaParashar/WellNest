@@ -36,7 +36,9 @@ public class UserProfileController {
         existing.setAge(updatedData.getAge());
         existing.setWeight(updatedData.getWeight());
         existing.setHeight(updatedData.getHeight());
-        existing.setFitnessGoals(updatedData.getFitnessGoals());
+        existing.setGoalSteps(updatedData.getGoalSteps());
+        existing.setGoalCalories(updatedData.getGoalCalories());
+        existing.setGoalExerciseMinutes(updatedData.getGoalExerciseMinutes());
 
         return service.save(existing);
     }

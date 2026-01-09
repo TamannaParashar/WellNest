@@ -52,6 +52,7 @@ public class Tracker {
         private String exerciseType;
         private int duration; // in minutes
         private int calories;
+        private int steps;
 
         // keep nested date as String to avoid strict parsing errors from locale-formatted strings
         private String date;
@@ -67,6 +68,9 @@ public class Tracker {
 
         public int getCalories() { return calories; }
         public void setCalories(int calories) { this.calories = calories; }
+
+        public int getSteps() { return steps; }
+        public void setSteps(int steps) { this.steps = steps; } 
 
         public String getDate() { return date; }
         public void setDate(String date) { this.date = date; }
