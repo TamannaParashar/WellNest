@@ -10,7 +10,9 @@ export default function Profile() {
     age: "",
     weight: "",
     height: "",
-    fitnessGoals: "",
+    goalSteps: "",
+    goalCalories: "",
+    goalExerciseMinutes: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -35,7 +37,9 @@ export default function Profile() {
           age: data.age || "",
           weight: data.weight || "",
           height: data.height || "",
-          fitnessGoals: data.fitnessGoals || "",
+          goalSteps: data.goalSteps ?? "",
+          goalCalories: data.goalCalories ?? "",
+          goalExerciseMinutes: data.goalExerciseMinutes ?? "",
         });
       } catch (err) {
         console.error("Failed to fetch profile:", err);
@@ -60,7 +64,15 @@ export default function Profile() {
       const res = await fetch(`http://localhost:8080/api/user-profile/${email}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+      ...formData,
+      age: Number(formData.age),
+      weight: Number(formData.weight),
+      height: Number(formData.height),
+      goalSteps: Number(formData.goalSteps),
+      goalCalories: Number(formData.goalCalories),
+      goalExerciseMinutes: Number(formData.goalExerciseMinutes),
+    }),
       });
       const data = await res.json();
       alert("Profile updated successfully!");
@@ -128,12 +140,32 @@ export default function Profile() {
               className="w-full px-4 py-2 bg-gray-900 border border-green-500 rounded-lg text-white"
               required
             />
-            <textarea
-              name="fitnessGoals"
-              value={formData.fitnessGoals}
+            <input
+              type="number"
+              name="goalSteps"
+              value={formData.goalSteps}
               onChange={handleChange}
-              placeholder="Fitness Goals"
-              rows={4}
+              placeholder="Daily Steps Goal (e.g. 10000)"
+              className="w-full px-4 py-2 bg-gray-900 border border-green-500 rounded-lg text-white"
+              required
+            />
+
+            <input
+              type="number"
+              name="goalCalories"
+              value={formData.goalCalories}
+              onChange={handleChange}
+              placeholder="Daily Calories Goal"
+              className="w-full px-4 py-2 bg-gray-900 border border-green-500 rounded-lg text-white"
+              required
+            />
+
+            <input
+              type="number"
+              name="goalExerciseMinutes"
+              value={formData.goalExerciseMinutes}
+              onChange={handleChange}
+              placeholder="Daily Exercise Time (minutes)"
               className="w-full px-4 py-2 bg-gray-900 border border-green-500 rounded-lg text-white"
               required
             />

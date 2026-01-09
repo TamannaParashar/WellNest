@@ -11,7 +11,7 @@ export default function Tracker() {
 
   const [activeTab, setActiveTab] = useState("workout")
   const [workouts, setWorkouts] = useState([])
-  const [workoutForm, setWorkoutForm] = useState({ exerciseType: "", duration: "", calories: "" })
+  const [workoutForm, setWorkoutForm] = useState({exerciseType: "", duration: "", calories: "",steps: ""})
   const [meals, setMeals] = useState([])
   const [mealForm, setMealForm] = useState({ mealType: "", calories: "", protein: "", carbs: "", fats: "" })
   const [waterIntake, setWaterIntake] = useState([])
@@ -79,12 +79,13 @@ export default function Tracker() {
   const addWorkout = () => {
     const durationNum = Number(workoutForm.duration);
     const caloriesNum = workoutForm.calories ? Number(workoutForm.calories) : 0;
+    const stepsNum = workoutForm.steps ? Number(workoutForm.steps) : 0;
 
     if (!workoutForm.exerciseType || !workoutForm.duration) {
       alert("Please fill in exercise type and duration")
       return
     }
-    if (durationNum < 0 || caloriesNum < 0) {
+    if (durationNum < 0 || caloriesNum < 0 || stepsNum < 0) {
       alert("Duration and Calories cannot be negative")
       return
     }
@@ -93,7 +94,7 @@ export default function Tracker() {
       ...workouts,
       { id: Date.now(), ...workoutForm, date: isoToday() },
     ])
-    setWorkoutForm({ exerciseType: "", duration: "", calories: "" })
+    setWorkoutForm({exerciseType: "", duration: "", calories: "",steps: ""})
   }
 
   const deleteWorkout = (id) => setWorkouts(workouts.filter(w => w.id !== id));
@@ -325,6 +326,17 @@ export default function Tracker() {
                     className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
                   />
                 </div>
+                <div>
+                <label className="block text-sm font-semibold text-green-500 mb-2">Steps (optional)</label>
+                <input
+                  type="number"
+                  placeholder="5000"
+                  value={workoutForm.steps}
+                  onChange={(e) => setWorkoutForm({ ...workoutForm, steps: e.target.value })}
+                  className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                />
+              </div>
+
               </div>
 
               <button

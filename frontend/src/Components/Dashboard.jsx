@@ -1,13 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Line, Bar } from "react-chartjs-2"
-import { Chart, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Tooltip, Legend } from "chart.js"
+import { Line, Bar, Doughnut } from "react-chartjs-2"
+import { Chart, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Tooltip, Legend } from "chart.js"
 import { TrendingUp, Activity, Utensils, Droplet, Moon, Flame, Zap } from "lucide-react"
 import {Link} from "react-router-dom"
 import { useUser } from "@clerk/clerk-react"
 
-Chart.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Tooltip, Legend)
+Chart.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Tooltip, Legend)
 
 export default function Dashboard() {
   const {user} = useUser();
@@ -21,6 +21,12 @@ export default function Dashboard() {
     totalWater: 0,
     totalSleep: 0,
   })
+  const [goals, setGoals] = useState({
+  goalSteps: 0,
+  goalCalories: 0,
+  goalExerciseMinutes: 0,
+})
+
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -31,6 +37,11 @@ export default function Dashboard() {
 
         const profile = await response.json()
         setName(profile.name || "User")
+        setGoals({
+        goalSteps: profile.goalSteps || 0,
+        goalCalories: profile.goalCalories || 0,
+        goalExerciseMinutes: profile.goalExerciseMinutes || 0,
+      })
       } catch (err) {
         console.error("Error fetching profile:", err)
         setName("User")
@@ -68,12 +79,14 @@ export default function Dashboard() {
             sleep = 0,
             protein = 0,
             carbs = 0,
-            fats = 0
+            fats = 0,
+            steps = 0,
+            workouts = []
 
           if (log) {
             caloriesBurned = log.workouts?.reduce((s, w) => s + Number(w.calories || 0), 0)
-
             caloriesConsumed = log.meals?.reduce((s, m) => s + Number(m.calories || 0), 0)
+            steps = log.workouts?.reduce((s, w) => s + Number(w.steps || 0), 0)
 
             protein = log.meals?.reduce((s, m) => s + (m.protein || 0), 0)
             carbs = log.meals?.reduce((s, m) => s + (m.carbs || 0), 0)
@@ -81,6 +94,7 @@ export default function Dashboard() {
 
             water = log.waterIntake?.reduce((s, w) => s + (w.amount || 0), 0)
             sleep = log.sleepLog?.reduce((s, sl) => s + (sl.hours || 0), 0)
+            workouts = log.workouts || []
           }
 
           return {
@@ -92,6 +106,8 @@ export default function Dashboard() {
             protein,
             carbs,
             fats,
+            steps,  
+            workouts
           }
         })
 
@@ -175,6 +191,22 @@ export default function Dashboard() {
       },
     },
   }
+
+  const weeklyTargets = {
+  steps: goals.goalSteps * 7,
+  calories: goals.goalCalories * 7,
+  exercise: goals.goalExerciseMinutes * 7,
+}
+
+// Example actual values (adjust if your tracker has steps/exercise)
+const weeklyActual = {
+  steps: weekData.reduce((s, d) => s + (d.steps || 0), 0),
+  calories: weekSummary.totalCaloriesBurned,
+   exercise: weekData.reduce((s, d) => 
+  s + (d.workouts?.reduce((sum, w) => sum + (w.duration || 0), 0) || 0), 
+0),
+}
+
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -379,6 +411,67 @@ export default function Dashboard() {
               />
             </div>
           </div>
+
+{/* 🎯 Goal Tracker */}
+<div className="bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/20 rounded-2xl p-8 hover:border-green-500/40 transition-all">
+  <div className="flex items-center gap-3 mb-6">
+    <div className="p-2 bg-green-500/20 rounded-lg">
+      <TrendingUp className="w-5 h-5 text-green-500" />
+    </div>
+    <h3 className="text-xl font-bold text-white">Goal Tracker</h3>
+  </div>
+
+  <div className="space-y-6 mt-4">
+    {[
+      {
+        label: "Calories Burned",
+        actual: weeklyActual.calories,
+        target: weeklyTargets.calories,
+      },
+      {
+        label: "Exercise Time (min)",
+        actual: weeklyActual.exercise,
+        target: weeklyTargets.exercise,
+      },
+      {
+        label: "Steps",
+        actual: weeklyActual.steps,
+        target: weeklyTargets.steps,
+      },
+    ].map(({ label, actual, target }) => {
+      const percentage = target > 0 ? Math.round((actual / target) * 100) : 0
+
+      // Determine color based on percentage
+      let colorClass = ""
+      if (percentage < 50) colorClass = "bg-red-500"
+      else if (percentage <= 75) colorClass = "bg-yellow-500"
+      else if (percentage <= 99) colorClass = "bg-blue-500"
+      else colorClass = "bg-green-500"
+
+      const getInsight = (pct) => {
+        if (pct < 50) return `You are just getting started with ${label.toLowerCase()}. Try to increase your activity!`
+        if (pct <= 75) return `Good progress on ${label.toLowerCase()}. Keep pushing a bit more!`
+        if (pct <= 90) return `Great work on ${label.toLowerCase()}. Almost there!`
+        if (pct <= 99) return `Excellent effort on ${label.toLowerCase()}. One last push to hit your goal!`
+        return `Goal achieved for ${label.toLowerCase()}! Keep up the fantastic work!`
+      }
+
+      return (
+        <div key={label}>
+          <div className="flex justify-between mb-1">
+            <span className="text-white font-semibold">{label}</span>
+            <span className="text-gray-400 font-medium">{percentage}%</span>
+          </div>
+          <div className="w-full h-4 bg-gray-800 rounded-full overflow-hidden mb-1">
+            <div className={`${colorClass} h-4 rounded-full`} style={{ width: `${Math.min(percentage, 100)}%` }}></div>
+          </div>
+          <p className="text-gray-400 text-sm">{getInsight(percentage)}</p>
+        </div>
+      )
+    })}
+  </div>
+</div>
+
 
           {/* Macros Breakdown */}
           <div className="bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/20 rounded-2xl p-8 hover:border-green-500/40 transition-all">
