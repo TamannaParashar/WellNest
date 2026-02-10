@@ -1,7 +1,7 @@
 "use client"
 import { useUser } from "@clerk/clerk-react"
 import { useState, useEffect } from "react"
-import { Upload, Menu, X, Heart, MessageCircle } from "lucide-react"
+import { Upload, Menu, X, Heart, MessageCircle,Edit, Trash2, Share2 } from "lucide-react"
 import { useNavigate, Link} from "react-router-dom"
 
 export default function Blog() {
@@ -19,6 +19,8 @@ export default function Blog() {
   const [expandedBlogIds, setExpandedBlogIds] = useState([])
   const [likedBlogs, setLikedBlogs] = useState({})
   const [commentStates, setCommentStates] = useState({})
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingBlogId, setEditingBlogId] = useState(null)
 
   const { isLoaded, user } = useUser()
   const navigate = useNavigate()
@@ -60,6 +62,44 @@ export default function Blog() {
     fetchBlogs()
   }, [])
 
+  const handleShare = async (blogId) => {
+  const shareUrl = `${window.location.origin}/blogContent/${blogId}`
+
+  try {
+    await navigator.clipboard.writeText(shareUrl)
+    alert("Blog link copied to clipboard!")
+  } catch {
+    alert("Failed to copy link")
+  }
+}
+const handleDelete = async (blogId) => {
+  if (!window.confirm("Are you sure you want to delete this blog?")) return
+
+  try {
+    await fetch(`http://localhost:8080/api/blogs/${blogId}`, {
+      method: "DELETE",
+    })
+
+    setBlogs((prev) => prev.filter((b) => b.id !== blogId))
+  } catch (err) {
+    console.error("Failed to delete blog", err)
+  }
+}
+const handleEdit = (blog) => {
+  setIsEditing(true)
+  setEditingBlogId(blog.id)
+
+  setFormData({
+    title: blog.title,
+    blogText: blog.content,
+    authorName: blog.authorName,
+    thumbnail: null,
+  })
+
+  setThumbnailPreview(`http://localhost:8080/${blog.thumbnailUrl}`)
+  setIsModalOpen(true)
+}
+
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({
@@ -87,35 +127,47 @@ export default function Blog() {
     navigate("/blogContent", { state: { blog } })
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!isLoaded || !user) {
-      alert("User not loaded yet. Please try again.")
-      return
-    }
-    const data = new FormData()
-    data.append("authorId", user.id)
-    data.append("authorName", formData.authorName)
-    data.append("title", formData.title)
-    data.append("content", formData.blogText)
-    data.append("userType", "user")
-    data.append("thumbnail", formData.thumbnail)
+const handleSubmit = async (e) => {
+  e.preventDefault()
+  if (!isLoaded || !user) return
 
-    const res = await fetch("http://localhost:8080/api/blogs", {
-      method: "POST",
-      body: data,
-    })
-    const result = await res.json()
-    console.log("Blog saved:", result)
-    setBlogs((prev) => [result, ...prev])
-    setCommentStates((prev) => ({
-      ...prev,
-      [result.id]: { isOpen: false, newComment: "", comments: [] },
-    }))
-    setIsModalOpen(false)
-    setFormData({ title: "", blogText: "", thumbnail: null, authorName: "" })
-    setThumbnailPreview(null)
+  const data = new FormData()
+  data.append("authorId", user.id)
+  data.append("authorName", formData.authorName)
+  data.append("title", formData.title)
+  data.append("content", formData.blogText)
+  data.append("userType", "user")
+
+  if (formData.thumbnail) {
+    data.append("thumbnail", formData.thumbnail)
   }
+
+  const url = isEditing
+    ? `http://localhost:8080/api/blogs/${editingBlogId}`
+    : "http://localhost:8080/api/blogs"
+
+  const method = isEditing ? "PUT" : "POST"
+
+  const res = await fetch(url, {
+    method,
+    body: data,
+  })
+
+  const result = await res.json()
+
+  setBlogs((prev) =>
+    isEditing
+      ? prev.map((b) => (b.id === result.id ? result : b))
+      : [result, ...prev]
+  )
+
+  setIsModalOpen(false)
+  setIsEditing(false)
+  setEditingBlogId(null)
+  setFormData({ title: "", blogText: "", thumbnail: null, authorName: "" })
+  setThumbnailPreview(null)
+}
+
 
   const handleLike = async (blogId) => {
   if (!isLoaded || !user) {
@@ -235,7 +287,7 @@ const handleAddComment = async (blogId) => {
                 className="w-full flex items-center justify-center gap-2 bg-green-500 text-black px-6 py-2 rounded-lg hover:bg-green-600 transition-colors font-semibold"
               >
                 <Upload size={20} />
-                Upload Blog
+                {isEditing ? "Update Blog" : "Upload Blog"}
               </button>
             </div>
           )}
@@ -247,7 +299,7 @@ const handleAddComment = async (blogId) => {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
           <div className="bg-gray-900 rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="border-b border-green-500 p-6 flex justify-between items-center sticky top-0 bg-gray-900">
-              <h2 className="text-2xl font-bold text-green-500">Upload Blog</h2>
+              <h2 className="text-2xl font-bold text-green-500">{isEditing ? "Edit Blog" : "Upload Blog"}</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-400 hover:text-green-500 transition-colors"
@@ -314,7 +366,7 @@ const handleAddComment = async (blogId) => {
                   type="submit"
                   className="flex-1 bg-green-500 text-black font-semibold py-3 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
                 >
-                  <Upload size={20} /> Upload Blog
+                  <Upload size={20} /> {isEditing ? "Update Blog" : "Upload Blog"}
                 </button>
                 <button
                   type="button"
@@ -393,6 +445,37 @@ const handleAddComment = async (blogId) => {
                       <MessageCircle size={18} />
                       <span className="text-sm">{commentStates[blog.id]?.comments?.length || 0}</span>
                     </button>
+                    <div className="flex gap-2">
+    {/* Share */}
+                  <button
+                    onClick={() => handleShare(blog.id)}
+                    className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-green-500 hover:bg-gray-700"
+                    title="Share"
+                  >
+                    <Share2 size={16} />
+                  </button>
+
+                  {/* Edit & Delete only for author */}
+                  {user && blog.authorId === user.id && (
+                    <>
+                      <button
+                        onClick={() => handleEdit(blog)}
+                        className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-blue-500 hover:bg-gray-700"
+                        title="Edit"
+                      >
+                        <Edit size={16} />
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(blog.id)}
+                        className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-500 hover:bg-gray-700"
+                        title="Delete"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </>
+                  )}
+                  </div>
                   </div>
 
                   {commentStates[blog.id]?.isOpen && (

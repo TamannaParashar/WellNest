@@ -24,7 +24,7 @@ export default function Profile() {
   useEffect(() => {
     if (!email) {
       alert("User not logged in!");
-      navigate("/login");
+      navigate("/");
       return;
     }
 
