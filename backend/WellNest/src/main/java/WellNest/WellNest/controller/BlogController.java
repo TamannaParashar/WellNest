@@ -96,4 +96,34 @@ public class BlogController {
     public List<Comment> getComments(@PathVariable String blogId) {
         return commentService.getCommentsBySource(blogId, "BLOG");
     }
+    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+public Blog updateBlog(
+        @PathVariable String id,
+        @RequestParam("authorName") String authorName,
+        @RequestParam("title") String title,
+        @RequestParam("content") String content,
+        @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail
+) throws IOException {
+
+    Blog blog = service.getById(id);
+
+    blog.setAuthorName(authorName);
+    blog.setTitle(title);
+    blog.setContent(content);
+    blog.setUpdatedAt(System.currentTimeMillis());
+
+    if (thumbnail != null && !thumbnail.isEmpty()) {
+        String fileName = System.currentTimeMillis() + "_" + thumbnail.getOriginalFilename();
+        String path = "uploads/" + fileName;
+        java.nio.file.Files.copy(thumbnail.getInputStream(), java.nio.file.Paths.get(path));
+        blog.setThumbnailUrl(path);
+    }
+
+    return service.save(blog);
+}
+@DeleteMapping("/{id}")
+public void deleteBlog(@PathVariable String id) {
+    service.deleteById(id);
+}
+
 }

@@ -44,6 +44,12 @@ public Blog unlikeBlog(String blogId, String userId) {
     blog.setLikes(blog.getLikedBy().size());
     return repo.save(blog);
 }
+public Blog getById(String id) {
+    return repo.findById(id).orElseThrow();
+}
 
+public void deleteById(String id) {
+    repo.deleteById(id);
+}
 
 }
