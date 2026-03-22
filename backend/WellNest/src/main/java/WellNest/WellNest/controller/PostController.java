@@ -85,4 +85,8 @@ public List<Map<String, Object>> getAllPosts() {
     public List<Comment> getComments(@PathVariable String postId) {
         return commentService.getCommentsBySource(postId, "COMMUNITY");
     }
+    @DeleteMapping("/{postId}")
+    public void deletePost(@PathVariable String postId){
+        service.deleteById(postId);
+    }
 }

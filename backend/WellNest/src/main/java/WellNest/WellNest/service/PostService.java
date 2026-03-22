@@ -37,5 +37,7 @@ public class PostService {
         post.setLikes(post.getLikedBy().size());
         return repo.save(post);
     }
-    
+    public void deleteById(String postId){
+        repo.deleteById(postId);
+    }
 }

@@ -1,7 +1,7 @@
 "use client"
 import { useUser } from "@clerk/clerk-react"
 import { useState, useEffect } from "react"
-import { Upload, Menu, X, Heart, MessageCircle, Share2 } from "lucide-react"
+import { Upload, Menu, X, Heart, MessageCircle, Share2,Trash2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
 // TIME AGO FUNCTION
@@ -94,6 +94,20 @@ export default function Community() {
       console.error("Failed to post:", err)
     }
   }
+
+  const handleDelete = async (postId) => {
+  if (!window.confirm("Are you sure you want to delete this post?")) return
+
+  try {
+    await fetch(`http://localhost:8080/api/posts/${postId}`, {
+      method: "DELETE",
+    })
+
+    setPosts((prev) => prev.filter((p) => p.id !== postId))
+  } catch (err) {
+    console.error("Failed to delete blog", err)
+  }
+}
 
   // LIKE POST
   const handleLike = async (postId) => {
@@ -303,6 +317,16 @@ export default function Community() {
               >
                 <Share2 size={18} />
               </button>
+
+              {user?.id === post.userId && (
+                <button
+                  onClick={() => handleDelete(post.id)}
+                  className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-500 hover:bg-gray-700"
+                  title="Delete"
+                >
+                  <Trash2 size={16} />
+                </button>
+              )}
             </div>
 
             {/* COMMENT SECTION */}
