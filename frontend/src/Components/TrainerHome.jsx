@@ -134,26 +134,55 @@ export default function TrainerHome() {
       </div>
 
       {trainerProfileModule && trainerProfile && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-black border-2 border-green-500 rounded-2xl p-8 w-full max-w-md shadow-2xl shadow-green-500/20 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-3xl font-bold mb-6 text-center text-green-500">My Profile</h2>
-            <div className="space-y-4 text-gray-300">
-              <p><strong>Name:</strong> {trainerProfile.trainerName}</p>
-              <p><strong>Email:</strong> {trainerProfile.trainerEmail}</p>
-              <p><strong>Phone:</strong> {trainerProfile.trainerPhone}</p>
-              <p><strong>Title:</strong> {trainerProfile.trainerTitle}</p>
-              <p><strong>Bio:</strong> {trainerProfile.trainerBio}</p>
-              <p><strong>Expertise:</strong> {trainerProfile.trainerExpertise}</p>
-              <p><strong>Certification:</strong> {trainerProfile.trainerCertification}</p>
-            </div>
-            <button
-              onClick={closeProfileModal}
-              className="w-full mt-6 py-3 bg-green-500 text-black rounded-lg hover:bg-green-400 transition-all font-bold"
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+  <div className="relative bg-gradient-to-br from-black via-gray-900 to-black border border-green-500/30 rounded-3xl p-8 w-full max-w-md shadow-2xl shadow-green-500/20 max-h-[90vh] overflow-y-auto">
+
+    {/* Close Button (top right) */}
+    <button
+      onClick={closeProfileModal}
+      className="absolute top-4 right-4 text-gray-400 hover:text-green-500 text-xl"
+    >
+      ✕
+    </button>
+
+    {/* Profile Header */}
+    <div className="flex flex-col items-center mb-6">
+      <div className="w-20 h-20 rounded-full bg-green-500 flex items-center justify-center text-black text-3xl font-bold shadow-lg">
+        {trainerProfile.trainerName?.[0]?.toUpperCase()}
+      </div>
+      <h2 className="text-2xl font-bold mt-3 text-green-500">
+        {trainerProfile.trainerName}
+      </h2>
+      <p className="text-gray-400 text-sm">
+        {trainerProfile.trainerEmail}
+      </p>
+    </div>
+
+    {/* Profile Details */}
+    <div className="space-y-4">
+
+      <ProfileItem label="Phone" value={trainerProfile.trainerPhone} />
+      <ProfileItem label="Title" value={trainerProfile.trainerTitle} />
+      <ProfileItem label="Expertise" value={trainerProfile.trainerExpertise} />
+      <ProfileItem label="Certification" value={trainerProfile.trainerCertification} />
+
+      <div className="bg-black/50 border border-green-500/20 rounded-xl p-4">
+        <p className="text-green-500 font-semibold mb-1">Bio</p>
+        <p className="text-gray-300 text-sm leading-relaxed">
+          {trainerProfile.trainerBio}
+        </p>
+      </div>
+    </div>
+
+    {/* Close Button Bottom */}
+    <button
+      onClick={closeProfileModal}
+      className="w-full mt-6 py-3 bg-green-500 text-black rounded-xl hover:bg-green-400 transition-all font-bold"
+    >
+      Close
+    </button>
+  </div>
+</div>
       )}
 
       <footer className="text-center text-green-500 pb-4">
@@ -177,4 +206,14 @@ function FeatureCard({ icon, title, desc, action }) {
       <p className="text-gray-300 text-sm">{desc}</p>
     </div>
   )
+}
+function ProfileItem({ label, value }) {
+  return (
+    <div className="flex justify-between items-center bg-black/50 border border-green-500/20 rounded-xl px-4 py-3">
+      <span className="text-green-500 font-medium">{label}</span>
+      <span className="text-gray-300 text-sm text-right max-w-[60%]">
+        {value || "—"}
+      </span>
+    </div>
+  );
 }
