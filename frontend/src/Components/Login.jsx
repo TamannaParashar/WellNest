@@ -166,8 +166,8 @@ const handleResetVerification=async(e)=>{
   return (
     <div className="max-h-screen overflow-y-hidden bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center p-4">
       <div className="w-full max-w-5xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-2xl bg-white">
-          <div className="hidden lg:block h-full min-h-96">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-2xl bg-white min-h-[500px]">
+          <div className="hidden lg:block h-full">
             <img
               src="/img3.jpg"
               alt="WellNest"
@@ -175,7 +175,7 @@ const handleResetVerification=async(e)=>{
             />
           </div>
 
-          <div className="flex flex-col justify-center p-8 lg:p-10">
+          <div className="flex flex-col justify-center p-8 lg:p-10 min-h-[500px]">
             <div className="mb-8">
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">
                 Welcome to <span className="text-green-500">WellNest</span>
