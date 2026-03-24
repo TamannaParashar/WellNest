@@ -428,10 +428,10 @@ const handleAddComment = async (blogId) => {
                   <div className="flex items-center gap-4 mb-4 border-t border-gray-700 pt-4">
                     <button
                       onClick={() => handleLike(blog.id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors ${
                         likedBlogs[blog.id]
-                          ? "bg-red-500 text-white"
-                          : "bg-gray-800 text-gray-400 hover:text-red-500 hover:bg-gray-700"
+                          ? "text-red-500"
+                          : "text-gray-400 hover:text-red-500"
                       }`}
                     >
                       <Heart size={18} fill={likedBlogs[blog.id] ? "currentColor" : "none"} />

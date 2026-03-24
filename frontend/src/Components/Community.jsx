@@ -289,10 +289,10 @@ export default function Community() {
               {/* LIKE */}
               <button
                 onClick={() => handleLike(post.id)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors ${
                   likedPosts[post.id]
-                    ? "bg-red-500 text-white"
-                    : "bg-gray-800 text-gray-400 hover:text-red-500 hover:bg-gray-700"
+                    ? "text-red-500"
+                    : "text-gray-400 hover:text-red-500"
                 }`}
               >
                 <Heart size={18} fill={likedPosts[post.id] ? "currentColor" : "none"} />
