@@ -37,7 +37,7 @@ export const trainersData = [
   },
   {
     id: 4,
-    name: "Tam Sharma",
+    name: "Akruti Sharma",
     title: "Yoga & Flexibility Expert",
     image: "/yoga.jpeg",
     bio: "Emma teaches transformative yoga classes that improve flexibility, mental health, and overall wellbeing. Her calming approach makes yoga accessible to beginners and advanced practitioners alike.",

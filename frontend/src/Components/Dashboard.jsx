@@ -439,7 +439,7 @@ const weeklyActual = {
         target: weeklyTargets.steps,
       },
     ].map(({ label, actual, target }) => {
-      const percentage = target > 0 ? Math.round((actual / target) * 100) : 0
+      const percentage = target > 0 ? Math.min(Math.round((actual / target) * 100), 100) : 0
 
       // Determine color based on percentage
       let colorClass = ""
