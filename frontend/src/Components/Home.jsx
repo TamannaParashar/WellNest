@@ -13,6 +13,11 @@ export default function Home() {
   const [hasProfile, setHasProfile] = useState(false)
   const [dailyTip, setDailyTip] = useState(null)
   const [tipLoading, setTipLoading] = useState(false)
+  
+  // Notification State
+  const [showNotification, setShowNotification] = useState(false)
+  const [notificationMessage, setNotificationMessage] = useState("")
+
   const { user } = useUser();
   const navigate = useNavigate();
 
@@ -36,6 +41,56 @@ export default function Home() {
 
     checkProfile()
   }, [user])
+
+  // Notification Logic
+  useEffect(() => {
+    const email = user?.emailAddresses?.[0]?.emailAddress;
+    if (!email) return;
+
+    const checkProgressAndNotify = async () => {
+      const todayString = new Date().toISOString().slice(0, 10);
+
+      try {
+        const profRes = await fetch(`http://localhost:8080/api/user-profile/${encodeURIComponent(email)}`);
+        if (!profRes.ok) return;
+        const profile = await profRes.json();
+        
+        const trackRes = await fetch(`http://localhost:8080/api/tracker/email/${encodeURIComponent(email)}`);
+        let stepsToday = 0;
+
+        if (trackRes.ok) {
+           const trackData = await trackRes.json();
+           const todayLog = trackData.find(l => l.date === todayString);
+           if (todayLog && todayLog.workouts) {
+             stepsToday = todayLog.workouts.reduce((s, w) => s + Number(w.steps || 0), 0);
+           }
+        }
+
+        const noSteps = stepsToday === 0;
+        const lowProgress = profile.goalSteps > 0 && stepsToday < (profile.goalSteps * 0.2);
+
+        if (noSteps || lowProgress) {
+           setNotificationMessage(
+             noSteps 
+               ? "You haven't logged any progress today! Time to get moving!" 
+               : "Your daily progress is running very low! Keep pushing to reach your health goals!"
+           );
+           setShowNotification(true);
+           
+           // Play Sound Loud and Pop
+           const audio = new Audio('/notification.mp3');
+           audio.volume = 1.0; 
+           audio.play().catch(e => console.log('Autoplay blocked. User interaction required.', e));
+        }
+      } catch (err) {
+         console.error("Error checking notification:", err);
+      }
+    };
+
+    // Small delay so the page loads and catches attention nicely
+    const timer = setTimeout(checkProgressAndNotify, 1500);
+    return () => clearTimeout(timer);
+  }, [user]);
 
   const fetchAITip = async (force = false) => {
     const TWO_HOURS = 2 * 60 * 60 * 1000
@@ -234,6 +289,31 @@ Return only valid JSON, no markdown.`,
                 className="w-full py-3 bg-black border-2 border-green-500 text-green-500 rounded-lg hover:bg-green-500/10 transition-all font-semibold"
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notification Modal / Popup */}
+      {showNotification && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+          <div className="bg-black border-2 border-red-500 rounded-2xl p-8 w-full max-w-md shadow-2xl shadow-red-500/50 transform transition-all animate-[pulse_2s_infinite]">
+            <div className="flex items-center justify-center mb-6">
+               <div className="p-4 bg-red-500/20 rounded-full">
+                 <Activity className="w-12 h-12 text-red-500" />
+               </div>
+            </div>
+            <h2 className="text-3xl font-extrabold mb-4 text-center text-red-500">Wake Up!</h2>
+            <p className="text-white text-lg font-medium text-center leading-relaxed mb-8">
+              {notificationMessage}
+            </p>
+            <div className="flex gap-4">
+              <button onClick={() => {setShowNotification(false); navigate("/tracker")}} className="flex-1 py-3 bg-red-500 text-black font-bold rounded-xl hover:bg-red-400 transition-colors shadow-lg shadow-red-500/30 text-lg">
+                Log Activity
+              </button>
+              <button onClick={() => setShowNotification(false)} className="py-3 px-6 bg-transparent border-2 border-red-500 text-red-500 font-bold rounded-xl hover:bg-red-500/10 transition-colors">
+                Dismiss
               </button>
             </div>
           </div>
