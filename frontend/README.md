@@ -1,16 +1,10 @@
-# React + Vite
+# 🍃 WellNest
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**WellNest** is a comprehensive, full-stack wellness and fitness tracking platform designed to elevate your daily health regimen. Moving beyond basic metric tracking, WellNest leverages the power of AI to provide hyper-personalized insights, a daily action plan, and real-time visual trend analysis.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ✨ Key Features
+- **AI-Powered Daily Missions:** Uses AI to analyze your performance against your goals and automatically generate a single, highly-actionable strategy for your day.
+- **Dynamic Weekly Health Score:** A visually engaging (0-100) health rating calculated dynamically based on your calorie burn, steps, and exercise data against your targets.
+- **Smart Streak & Trend Detection:** Keep your motivation high with gamified pop-up streak counters and real-time trend badges.
+- **Real-time Analytics Dashboard:** Beautiful, interactive unified charts to monitor your calories, sleep, and hydration intake across the week.
+- **Integrated Community & Trainers:** Connect with specialized coaches and chat in real-time.
