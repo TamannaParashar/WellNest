@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Activity, Utensils, Droplet, Moon, Plus, Trash2, Calendar, TrendingUp } from "lucide-react"
+import { useEffect, useState, useRef } from "react"
+import { Activity, Utensils, Droplet, Moon, Plus, Trash2, Calendar, TrendingUp, Camera, RefreshCw } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { useUser } from "@clerk/clerk-react"
+import { GoogleGenAI } from "@google/genai"
 
 export default function Tracker() {
   const { user } = useUser();
@@ -11,7 +12,7 @@ export default function Tracker() {
 
   const [activeTab, setActiveTab] = useState("workout")
   const [workouts, setWorkouts] = useState([])
-  const [workoutForm, setWorkoutForm] = useState({exerciseType: "", duration: "", calories: "",steps: ""})
+  const [workoutForm, setWorkoutForm] = useState({ exerciseType: "", duration: "", calories: "", steps: "" })
   const [meals, setMeals] = useState([])
   const [mealForm, setMealForm] = useState({ mealType: "", calories: "", protein: "", carbs: "", fats: "" })
   const [waterIntake, setWaterIntake] = useState([])
@@ -19,6 +20,11 @@ export default function Tracker() {
   const [sleepLog, setSleepLog] = useState([])
   const [sleepForm, setSleepForm] = useState({ hours: "", notes: "" })
   const [isSaved, setIsSaved] = useState(false);
+
+  // Smart Logger States
+  const [scanningMeal, setScanningMeal] = useState(false);
+  const [mealImagePreview, setMealImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (!user) return;
@@ -32,7 +38,7 @@ export default function Tracker() {
         const response = await fetch(`http://localhost:8080/api/tracker/email/${encodeURIComponent(email)}`);
         if (!response.ok) {
           let errBody = null;
-          try { errBody = await response.json(); } catch (_) {}
+          try { errBody = await response.json(); } catch (_) { }
           throw new Error(errBody?.message || `Failed to fetch tracker: ${response.status}`);
         }
 
@@ -69,12 +75,12 @@ export default function Tracker() {
   const isoToday = () => new Date().toISOString().slice(0, 10);
 
   const deriveSleepQuality = (hours) => {
-      if (hours < 5) return "Poor"
-      if (hours < 7) return "Fair"
-      if (hours < 8) return "Good"
-      return "Excellent"
-    }
-    
+    if (hours < 5) return "Poor"
+    if (hours < 7) return "Fair"
+    if (hours < 8) return "Good"
+    return "Excellent"
+  }
+
   // --- ADD FUNCTIONS ---
   const addWorkout = () => {
     const durationNum = Number(workoutForm.duration);
@@ -94,7 +100,7 @@ export default function Tracker() {
       ...workouts,
       { id: Date.now(), ...workoutForm, date: isoToday() },
     ])
-    setWorkoutForm({exerciseType: "", duration: "", calories: "",steps: ""})
+    setWorkoutForm({ exerciseType: "", duration: "", calories: "", steps: "" })
   }
 
   const deleteWorkout = (id) => setWorkouts(workouts.filter(w => w.id !== id));
@@ -143,34 +149,34 @@ export default function Tracker() {
 
   const deleteWater = (id) => setWaterIntake(waterIntake.filter(w => w.id !== id));
 
- const addSleep = () => {
-  const hoursNum = Number(sleepForm.hours)
+  const addSleep = () => {
+    const hoursNum = Number(sleepForm.hours)
 
-  if (!sleepForm.hours) {
-    alert("Please enter sleep duration")
-    return
+    if (!sleepForm.hours) {
+      alert("Please enter sleep duration")
+      return
+    }
+
+    if (hoursNum < 0) {
+      alert("Sleep hours cannot be negative")
+      return
+    }
+
+    const quality = deriveSleepQuality(hoursNum)
+
+    setSleepLog([
+      ...sleepLog,
+      {
+        id: Date.now(),
+        hours: hoursNum,
+        quality,
+        notes: sleepForm.notes,
+        date: isoToday(),
+      },
+    ])
+
+    setSleepForm({ hours: "", notes: "" })
   }
-
-  if (hoursNum < 0) {
-    alert("Sleep hours cannot be negative")
-    return
-  }
-
-  const quality = deriveSleepQuality(hoursNum)
-
-  setSleepLog([
-    ...sleepLog,
-    {
-      id: Date.now(),
-      hours: hoursNum,
-      quality,
-      notes: sleepForm.notes,
-      date: isoToday(),
-    },
-  ])
-
-  setSleepForm({ hours: "", notes: "" })
-}
   const deleteSleep = (id) => setSleepLog(sleepLog.filter(s => s.id !== id));
 
   const saveTracker = async () => {
@@ -233,6 +239,69 @@ export default function Tracker() {
     navigate(`/view-log`);
   };
 
+  const handleImageScan = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const objectUrl = URL.createObjectURL(file);
+    setMealImagePreview(objectUrl);
+    setScanningMeal(true);
+
+    try {
+      // Helper to strictly get the base64 string
+      const fileToBase64 = (file) => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.readAsDataURL(file);
+      });
+
+      const base64Data = await fileToBase64(file);
+
+      // Gemini 2.5 Flash natively supports multimodal Vision out of the box!
+      const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_KEY });
+      const prompt = `Analyze this food image and estimate the entire meal's macro nutritional value. 
+      Return ONLY a valid JSON object with the following exact keys:
+      {"mealType": "Breakfast" | "Lunch" | "Dinner" | "Snack" (Guess the best fit based on the food),
+       "calories": Number (total estimated calories),
+       "protein": Number (grams),
+       "carbs": Number (grams),
+       "fats": Number (grams)}`;
+
+      const genResponse = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: [
+          prompt,
+          { inlineData: { data: base64Data, mimeType: file.type } }
+        ],
+        config: {
+          responseMimeType: "application/json",
+          temperature: 0.5
+        }
+      });
+
+      let text = typeof genResponse.text === 'function' ? genResponse.text() : genResponse.text;
+      const parsedData = JSON.parse(text || "{}");
+
+      setMealForm({
+        mealType: parsedData.mealType || "Lunch",
+        calories: parsedData.calories?.toString() || "",
+        protein: parsedData.protein?.toString() || "",
+        carbs: parsedData.carbs?.toString() || "",
+        fats: parsedData.fats?.toString() || ""
+      });
+
+      // Quick visual feedback
+      alert(`Gemini Vision Scan Complete!\nEstimated ${parsedData.calories || "some"} calories!`);
+
+    } catch (err) {
+      console.error("Smart Scan Error:", err);
+      alert("Failed to analyze image using Gemini Vision. See console for details.");
+    } finally {
+      setScanningMeal(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
@@ -266,9 +335,8 @@ export default function Tracker() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-3 font-semibold transition-all relative ${
-                  activeTab === tab.id ? "text-green-500" : "text-gray-500 hover:text-gray-300"
-                }`}
+                className={`flex items-center gap-2 px-6 py-3 font-semibold transition-all relative ${activeTab === tab.id ? "text-green-500" : "text-gray-500 hover:text-gray-300"
+                  }`}
               >
                 <tab.icon className="w-5 h-5" />
                 {tab.label}
@@ -327,15 +395,15 @@ export default function Tracker() {
                   />
                 </div>
                 <div>
-                <label className="block text-sm font-semibold text-green-500 mb-2">Steps (optional)</label>
-                <input
-                  type="number"
-                  placeholder="5000"
-                  value={workoutForm.steps}
-                  onChange={(e) => setWorkoutForm({ ...workoutForm, steps: e.target.value })}
-                  className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
-                />
-              </div>
+                  <label className="block text-sm font-semibold text-green-500 mb-2">Steps (optional)</label>
+                  <input
+                    type="number"
+                    placeholder="5000"
+                    value={workoutForm.steps}
+                    onChange={(e) => setWorkoutForm({ ...workoutForm, steps: e.target.value })}
+                    className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                  />
+                </div>
 
               </div>
 
@@ -400,10 +468,38 @@ export default function Tracker() {
         {activeTab === "meal" && (
           <div className="space-y-8">
             <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-8">
-              <div className="flex items-center gap-3 mb-8">
-                <Utensils className="w-7 h-7 text-green-500" />
-                <h2 className="text-2xl font-bold text-white">Log Your Meal</h2>
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <Utensils className="w-7 h-7 text-green-500" />
+                  <h2 className="text-2xl font-bold text-white">Log Your Meal</h2>
+                </div>
+                {/* AI Smart Scan Button */}
+                <div className="flex items-center gap-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    ref={fileInputRef}
+                    onChange={handleImageScan}
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={scanningMeal}
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-blue-400 rounded-xl hover:bg-blue-500 hover:text-white transition-all font-semibold flex items-center gap-2"
+                  >
+                    {scanningMeal ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
+                    {scanningMeal ? "Running AI Pipeline..." : "Smart Scan (AI)"}
+                  </button>
+                </div>
               </div>
+
+              {/* Optional Preview */}
+              {mealImagePreview && (
+                <div className="mb-6 rounded-xl overflow-hidden border border-blue-500/30 w-32 h-32 relative">
+                  {scanningMeal && <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10"><RefreshCw className="w-6 h-6 text-blue-400 animate-spin" /></div>}
+                  <img src={mealImagePreview} alt="Meal preview" className="w-full h-full object-cover" />
+                </div>
+              )}
 
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
@@ -711,11 +807,10 @@ export default function Tracker() {
             onClick={viewLog}
             disabled={!isSaved}
             aria-disabled={!isSaved}
-            className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg ${
-              !isSaved
-                ? "bg-gray-700 text-gray-300 cursor-not-allowed"
-                : "bg-green-500 text-black hover:bg-green-400 shadow-green-500/50"
-            }`}
+            className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg ${!isSaved
+              ? "bg-gray-700 text-gray-300 cursor-not-allowed"
+              : "bg-green-500 text-black hover:bg-green-400 shadow-green-500/50"
+              }`}
             title={!isSaved ? "No saved log for today" : "View today's saved log"}
           >
             View log
