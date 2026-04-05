@@ -1,10 +1,10 @@
 export const trainersData = [
   {
     id: 1,
-    name: "Biswajit Thakur",
+    name: "Ben",
     title: "Muscle Gain Specialist",
     image: "/muscle.jpg",
-    bio: "Biswajit has 8 years of experience in strength training and muscle development. He specializes in creating personalized workout plans for clients looking to build lean muscle mass.",
+    bio: "Ben has 8 years of experience in strength training and muscle development. He specializes in creating personalized workout plans for clients looking to build lean muscle mass.",
     expertise: ["Muscle Gain", "Strength Training", "Bodybuilding"],
     availability: "Mon-Fri: 6AM-8PM, Sat-Sun: 8AM-6PM",
     certifications: ["NASM Certified", "ISSA Strength Coach", "Nutrition Specialist"],
