@@ -3,9 +3,12 @@
 import { useEffect, useState } from "react"
 import { Line, Bar, Doughnut } from "react-chartjs-2"
 import { Chart, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Tooltip, Legend } from "chart.js"
-import { TrendingUp, Activity, Utensils, Droplet, Moon, Flame, Zap } from "lucide-react"
+import { TrendingUp, Activity, Utensils, Droplet, Moon, Flame, Zap, ShieldCheck, Trophy, ArrowUpRight, ArrowDownRight } from "lucide-react"
 import {Link} from "react-router-dom"
 import { useUser } from "@clerk/clerk-react"
+import { motion } from "framer-motion"
+import AIHealthInsights from "./AIHealthInsights"
+import AITodayPlan from "./AITodayPlan"
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Tooltip, Legend)
 
@@ -207,6 +210,34 @@ const weeklyActual = {
 0),
 }
 
+// Calculate Streak
+let streak = 0;
+for (let i = weekData.length - 1; i >= 0; i--) {
+  const d = weekData[i];
+  const hasActivity = d.caloriesBurned > 0 || d.caloriesConsumed > 0 || d.water > 0 || d.sleep > 0 || d.steps > 0 || (d.workouts && d.workouts.length > 0);
+  if (hasActivity) {
+    streak++;
+  } else if (i !== weekData.length - 1) {
+    break; // Only allow zero activity if it's today (maybe they haven't logged yet)
+  }
+}
+
+// Trend Detection
+const todayData = weekData[weekData.length - 1] || {};
+const yesterdayData = weekData[weekData.length - 2] || {};
+const isTrendingUp = (todayData.caloriesBurned || 0) >= (yesterdayData.caloriesBurned || 0);
+
+// Calculate Health Score
+let healthScore = 0;
+if (weeklyTargets.calories > 0 || weeklyTargets.exercise > 0 || weeklyTargets.steps > 0) {
+  let calScore = weeklyTargets.calories > 0 ? Math.min(100, (weeklyActual.calories / weeklyTargets.calories) * 100) : 100;
+  let exScore = weeklyTargets.exercise > 0 ? Math.min(100, (weeklyActual.exercise / weeklyTargets.exercise) * 100) : 100;
+  let stepScore = weeklyTargets.steps > 0 ? Math.min(100, (weeklyActual.steps / weeklyTargets.steps) * 100) : 100;
+  healthScore = Math.round((calScore + exScore + stepScore) / 3);
+} else {
+  healthScore = weekSummary.totalCaloriesBurned > 0 ? 85 : 0;
+}
+
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -234,10 +265,84 @@ const weeklyActual = {
 
       <main className="max-w-7xl mx-auto px-6 py-12">
         {/* Welcome Section */}
-        <div className="mb-12">
-          <h2 className="text-4xl font-bold text-white mb-2">Welcome back, {name}</h2>
-          <p className="text-gray-400 text-lg">Here's your wellness overview for the past week</p>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+          <div>
+            <h2 className="text-4xl font-bold text-white mb-2">Welcome back, {name}</h2>
+            <p className="text-gray-400 text-lg">Here's your wellness overview for the past week</p>
+          </div>
+          
+          {/* Top Level Metric Badges */}
+          {!loading && weekData.length > 0 && (
+            <div className="flex items-center gap-4">
+              {streak > 0 && (
+                <motion.div 
+                  initial={{ scale: 0.8, opacity: 0 }} 
+                  animate={{ scale: 1, opacity: 1 }} 
+                  transition={{ type: "spring", bounce: 0.5 }}
+                  className="px-4 py-2 bg-gradient-to-r from-orange-500/20 to-red-500/20 border border-orange-500/30 rounded-xl flex items-center gap-2"
+                >
+                  <Flame className="w-5 h-5 text-orange-500" />
+                  <span className="text-lg font-bold text-orange-400">{streak} Day Streak!</span>
+                </motion.div>
+              )}
+               <div className="px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-xl flex items-center gap-2">
+                 {isTrendingUp ? (
+                   <ArrowUpRight className="w-5 h-5 text-green-500" />
+                 ) : (
+                   <ArrowDownRight className="w-5 h-5 text-red-500" />
+                 )}
+                 <span className="text-sm font-medium text-gray-300">
+                   {isTrendingUp ? "Activity Trending Up" : "Activity Trending Down"}
+                 </span>
+               </div>
+            </div>
+          )}
         </div>
+
+        {!loading && weekData.length > 0 && (
+          <div className="mb-12">
+             <AITodayPlan weekData={[...weekData].reverse()} goals={goals} userName={name} />
+          </div>
+        )}
+
+        {/* Health Score Banner */}
+        {!loading && weekData.length > 0 && (
+           <div className="w-full bg-gradient-to-r from-green-900/40 via-black to-emerald-900/40 border-y border-green-500/30 py-8 mb-12 flex items-center justify-center relative overflow-hidden">
+              <div className="absolute top-0 left-1/4 w-64 h-64 bg-green-500/10 rounded-full blur-3xl shadow-[0_0_50px_rgba(34,197,94,0.3)]"></div>
+              <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+                 <div className="relative">
+                   <svg className="w-32 h-32 transform -rotate-90">
+                     <circle cx="64" cy="64" r="60" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
+                     <motion.circle 
+                       initial={{ strokeDasharray: "0 400" }} 
+                       animate={{ strokeDasharray: `${(healthScore / 100) * 377} 400` }} 
+                       transition={{ duration: 2, ease: "easeOut" }}
+                       cx="64" cy="64" r="60" fill="none" stroke="currentColor" strokeWidth="8" 
+                       className={`${healthScore >= 80 ? 'text-green-500' : healthScore >= 50 ? 'text-yellow-500' : 'text-red-500'}`} 
+                     />
+                   </svg>
+                   <div className="absolute inset-0 flex items-center justify-center flex-col">
+                     <span className="text-4xl font-extrabold text-white">{healthScore}</span>
+                   </div>
+                 </div>
+                 <div>
+                   <h3 className="text-3xl font-bold text-white mb-2 flex items-center justify-center md:justify-start gap-3">
+                     <ShieldCheck className="w-8 h-8 text-green-400" /> Weekly Health Score
+                   </h3>
+                   <p className="text-gray-300 max-w-lg text-lg">
+                     {healthScore >= 80 ? "Outstanding performance! You are crushing your wellness goals this week." : 
+                      healthScore >= 50 ? "Solid effort! A little more consistency and you'll be at the top." : 
+                      "Just getting started. Every step counts, let's pick up the pace!"}
+                   </p>
+                 </div>
+              </div>
+           </div>
+        )}
+
+        {/* AI Health Visualizer */}
+        {!loading && weekData.length > 0 && (
+          <AIHealthInsights weekData={weekData} userName={name} />
+        )}
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -288,13 +393,13 @@ const weeklyActual = {
 
         {/* Charts Grid */}
         <div className="space-y-8">
-          {/* Calories Burned */}
+          {/* Calories Overview */}
           <div className="bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/20 rounded-2xl p-8 hover:border-green-500/40 transition-all">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-green-500/20 rounded-lg">
                 <Activity className="w-5 h-5 text-green-500" />
               </div>
-              <h3 className="text-xl font-bold text-white">Calories Burned</h3>
+              <h3 className="text-xl font-bold text-white">Calories Overview</h3>
             </div>
             <div className="h-80">
               <Line
@@ -314,26 +419,6 @@ const weeklyActual = {
                       pointBorderColor: "black",
                       pointBorderWidth: 2,
                     },
-                  ],
-                }}
-                options={chartOptions}
-              />
-            </div>
-          </div>
-
-          {/* Calories Consumed */}
-          <div className="bg-gradient-to-br from-yellow-500/5 to-transparent border border-yellow-500/20 rounded-2xl p-8 hover:border-yellow-500/40 transition-all">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-yellow-500/20 rounded-lg">
-                <Utensils className="w-5 h-5 text-yellow-500" />
-              </div>
-              <h3 className="text-xl font-bold text-white">Calories Consumed</h3>
-            </div>
-            <div className="h-80">
-              <Line
-                data={{
-                  labels,
-                  datasets: [
                     {
                       label: "Calories Consumed",
                       data: caloriesConsumed,
