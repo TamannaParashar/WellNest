@@ -1,8 +1,8 @@
 import {useState,useEffect} from "react"
 import {SignOutButton, useUser} from "@clerk/clerk-react"
 import {Link,useNavigate} from "react-router-dom"
-import {Menu, X, Activity, Heart, Target, Droplet, Moon, Utensils, TrendingUp} from "lucide-react"
-import healthTips from "../../healthTips.json"
+import {Menu, X, Activity, Heart, Target, Droplet, Moon, Utensils, TrendingUp, Sparkles, Zap, RefreshCw} from "lucide-react"
+import { GoogleGenAI } from "@google/genai"
 
 export default function Home() {
   const [isNavOpen, setIsNavOpen] = useState(false)
@@ -11,7 +11,8 @@ export default function Home() {
   const [weight, setWeight] = useState("")
   const [bmiResult, setBmiResult] = useState({ bmi: 0, category: "", advice: "" })
   const [hasProfile, setHasProfile] = useState(false)
-  const [dailyTip, setDailyTip] = useState("")
+  const [dailyTip, setDailyTip] = useState(null)
+  const [tipLoading, setTipLoading] = useState(false)
   const { user } = useUser();
   const navigate = useNavigate();
 
@@ -36,30 +37,45 @@ export default function Home() {
     checkProfile()
   }, [user])
 
-  useEffect(() => {
-  const ONE_DAY = 24 * 60 * 60 * 1000
+  const fetchAITip = async (force = false) => {
+    const TWO_HOURS = 2 * 60 * 60 * 1000
+    const savedRaw = localStorage.getItem("aiHealthTip")
+    const savedTime = localStorage.getItem("aiHealthTipTime")
+    const now = Date.now()
 
-  const savedTip = localStorage.getItem("dailyHealthTip")
-  const savedTime = localStorage.getItem("dailyHealthTipTime")
-  const now = Date.now()
+    if (!force && savedRaw && savedTime && now - Number(savedTime) < TWO_HOURS) {
+      try { setDailyTip(JSON.parse(savedRaw)); return } catch {}
+    }
 
-  const isValidTip =
-    savedTip &&
-    savedTip !== "undefined" &&
-    healthTips.includes(savedTip)
-
-  if (!isValidTip || !savedTime || now - Number(savedTime) > ONE_DAY) {
-    const randomIndex = Math.floor(Math.random() * healthTips.length)
-    const newTip = healthTips[randomIndex]
-
-    localStorage.setItem("dailyHealthTip", newTip)
-    localStorage.setItem("dailyHealthTipTime", now.toString())
-
-    setDailyTip(newTip)
-  } else {
-    setDailyTip(savedTip)
+    setTipLoading(true)
+    try {
+      const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_KEY })
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: `Generate a single, creative, expert-level daily health tip. Return ONLY a JSON object with these fields:
+- "tip": a compelling, actionable health advice sentence (max 2 sentences)
+- "category": one of ["Nutrition", "Fitness", "Sleep", "Hydration", "Mental Health", "Recovery"]
+- "emoji": a single relevant emoji
+Return only valid JSON, no markdown.`,
+        config: { responseMimeType: "application/json", temperature: 1.2 }
+      })
+      const parsed = JSON.parse(response.text)
+      setDailyTip(parsed)
+      localStorage.setItem("aiHealthTip", JSON.stringify(parsed))
+      localStorage.setItem("aiHealthTipTime", now.toString())
+    } catch (err) {
+      console.error("AI tip error:", err)
+      setDailyTip({ tip: "Stay hydrated — aim for at least 8 glasses of water today to boost energy and focus.", category: "Hydration", emoji: "💧" })
+    } finally {
+      setTipLoading(false)
+    }
   }
-}, [])
+
+  useEffect(() => {
+    fetchAITip()
+    const interval = setInterval(() => fetchAITip(true), 2 * 60 * 60 * 1000)
+    return () => clearInterval(interval)
+  }, [])
 
   const calculateBMI = () => {
     const h = Number(height)
@@ -243,37 +259,69 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Daily Health Tip */}
-        {dailyTip && (
-  <section className="mt-12 mb-16">
-    <div className="relative max-w-3xl mx-auto rounded-2xl overflow-hidden border-2 border-green-500 shadow-lg shadow-green-500/20">
+        {/* AI Daily Health Tip */}
+        <section className="mt-12 mb-16">
+          <div className="relative max-w-3xl mx-auto">
+            {/* Outer glow */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-green-500/30 via-emerald-400/20 to-teal-500/30 rounded-3xl blur-xl" />
 
-      {/* Blurred Background Image */}
-      <img
-        src="/tipBG.png"
-        alt="Health background"
-        className="absolute inset-0 w-full h-full object-coverif(curr.left!=null){
-                    q.add(curr.left);
-                } scale-110"
-      />
+            <div className="relative bg-gradient-to-br from-gray-950 via-black to-gray-900 border border-green-500/30 rounded-2xl overflow-hidden shadow-2xl">
+              {/* Top accent bar */}
+              <div className="h-1 w-full bg-gradient-to-r from-green-400 via-emerald-500 to-teal-400" />
 
-      {/* Dark overlay for better text contrast */}
-      <div className="absolute inset-0 bg-black/60"></div>
+              {/* Decorative corner circles */}
+              <div className="absolute -top-12 -right-12 w-40 h-40 bg-green-500/10 rounded-full blur-2xl" />
+              <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-teal-500/10 rounded-full blur-2xl" />
 
-      {/* Content */}
-      <div className="relative p-6 text-center">
-        <h2 className="text-2xl font-bold text-green-500 mb-3">
-          Daily Health Tip
-        </h2>
+              <div className="relative p-7">
+                {/* Header row */}
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-2.5">
+                    <div>
+                      <h2 className="text-lg font-bold text-white leading-tight">Daily Health Tip</h2>
+                    </div>
+                  </div>
 
-        <p className="text-gray-200 text-lg leading-relaxed">
-          {dailyTip}
-        </p>
-      </div>
+                  <div className="flex items-center gap-2">
+                    {dailyTip && !tipLoading && (
+                      <span className="px-3 py-1 bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold rounded-full flex items-center gap-1.5">
+                        <span className="text-base">{dailyTip.emoji}</span>
+                        {dailyTip.category}
+                      </span>
+                    )}
+                    <button
+                      onClick={() => fetchAITip(true)}
+                      disabled={tipLoading}
+                      title="Refresh tip"
+                      className="p-2 bg-white/5 hover:bg-green-500/10 border border-white/10 hover:border-green-500/30 rounded-xl text-gray-400 hover:text-green-400 transition-all disabled:opacity-40"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${tipLoading ? 'animate-spin' : ''}`} />
+                    </button>
+                  </div>
+                </div>
 
-    </div>
-  </section>
-)}
+                {/* Tip content */}
+                {tipLoading ? (
+                  <div className="space-y-3 animate-pulse">
+                    <div className="h-4 bg-white/10 rounded-full w-full" />
+                    <div className="h-4 bg-white/10 rounded-full w-4/5" />
+                    <div className="h-4 bg-white/10 rounded-full w-3/5" />
+                  </div>
+                ) : dailyTip ? (
+                  <p className="text-gray-200 text-lg leading-relaxed font-medium">
+                    {dailyTip.tip}
+                  </p>
+                ) : null}
+
+                {/* Footer */}
+                <div className="mt-5 flex items-center gap-2 text-xs text-gray-600">
+                  <Zap className="w-3 h-3" />
+                  <span>Refreshes every 2 hours</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
 
         {/* Features Grid */}
