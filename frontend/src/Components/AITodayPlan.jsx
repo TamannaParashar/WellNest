@@ -98,16 +98,10 @@ export default function AITodayPlan({ weekData, goals, userName }) {
       <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl" />
       
       <div className="flex flex-col md:flex-row gap-5 items-center relative z-10">
-        <div className="flex-shrink-0 relative">
-          <div className="absolute inset-0 bg-indigo-500 rounded-full blur opacity-50 animate-pulse" />
-          <div className="w-14 h-14 bg-black border border-indigo-500/50 rounded-full flex items-center justify-center relative z-10 shadow-[0_0_15px_rgba(99,102,241,0.5)]">
-             <Sparkles className="w-7 h-7 text-indigo-400" />
-          </div>
-        </div>
 
         <div className="flex-1 text-center md:text-left">
           <h3 className="text-sm font-bold tracking-wider text-indigo-400 uppercase mb-1 flex items-center justify-center md:justify-start gap-2">
-            <Target className="w-4 h-4" /> Today's AI Mission
+            <Target className="w-4 h-4" /> Today's Mission
           </h3>
           {loading ? (
              <div className="space-y-2 mt-2 w-full max-w-lg">
