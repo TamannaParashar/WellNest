@@ -36,9 +36,19 @@ public class UserProfileController {
         existing.setAge(updatedData.getAge());
         existing.setWeight(updatedData.getWeight());
         existing.setHeight(updatedData.getHeight());
+        existing.setGender(updatedData.getGender());
+        existing.setDietType(updatedData.getDietType());
+        existing.setFitnessLevel(updatedData.getFitnessLevel());
+        existing.setActivityLevel(updatedData.getActivityLevel());
+        existing.setHealthConditions(updatedData.getHealthConditions());
+        existing.setAllergies(updatedData.getAllergies());
         existing.setGoalSteps(updatedData.getGoalSteps());
         existing.setGoalCalories(updatedData.getGoalCalories());
         existing.setGoalExerciseMinutes(updatedData.getGoalExerciseMinutes());
+        existing.setWaterGoal(updatedData.getWaterGoal());
+        existing.setSleepGoal(updatedData.getSleepGoal());
+        existing.setSleepTime(updatedData.getSleepTime());
+        existing.setGymSplit(updatedData.getGymSplit());
 
         return service.save(existing);
     }

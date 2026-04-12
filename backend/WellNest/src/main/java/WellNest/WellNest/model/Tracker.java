@@ -56,6 +56,7 @@ public class Tracker {
 
         // keep nested date as String to avoid strict parsing errors from locale-formatted strings
         private String date;
+        private String splitDay; // Specific split segment completed (e.g., Push, Chest)
 
         public Workout() {}
 
@@ -74,6 +75,9 @@ public class Tracker {
 
         public String getDate() { return date; }
         public void setDate(String date) { this.date = date; }
+
+        public String getSplitDay() { return splitDay; }
+        public void setSplitDay(String splitDay) { this.splitDay = splitDay; }
     }
 
     public static class Meal {
