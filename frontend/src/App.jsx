@@ -18,6 +18,8 @@ import TrainerTalk from './Components/TrainerTalk'
 import TrainerChat from './Components/TrainerChat'
 import ClientChat from './Components/ClientChat'
 import TrainerHome from './Components/TrainerHome'
+import DietPlan from './Components/DietPlan'
+import Reminders from './Components/Reminders'
 
 function App() {
 const {isSignedIn} = useUser();
@@ -26,6 +28,8 @@ const {isSignedIn} = useUser();
       <Routes>
         <Route element={<Login/>} path='/'></Route>
         <Route element={<Profile/>} path='/profile'></Route>
+        <Route element={<ProtectedRoute><ClientChat/></ProtectedRoute>} path='/c-chat' />
+        <Route element={<ProtectedRoute><Reminders/></ProtectedRoute>} path='/reminders' />
         <Route element={<ProtectedRoute isSignedIn={isSignedIn}><Home/></ProtectedRoute>} path='/home'></Route>
         <Route element={<Dashboard/>} path='/dashboard'></Route>
         <Route element={<Tracker/>} path='/tracker'></Route>
@@ -40,6 +44,7 @@ const {isSignedIn} = useUser();
         <Route element={<Community/>} path='/community-post'></Route>
         <Route element={<Trainers/>} path='/trainers'></Route>
         <Route element={<ViewLog/>} path='/view-log'></Route>
+        <Route element={<DietPlan/>} path='/diet-plan'></Route>
       </Routes>
     </BrowserRouter>
   )
