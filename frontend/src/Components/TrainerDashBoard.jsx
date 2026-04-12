@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useUser } from "@clerk/clerk-react"
 import { Link } from "react-router-dom"
+import WellNestLoader from "./WellNestLoader"
 
 export default function TrainerDashboard() {
   const { user, isLoaded } = useUser()
@@ -78,19 +79,16 @@ export default function TrainerDashboard() {
 
   if (!isLoaded) return (
     <div className="flex items-center justify-center min-h-screen bg-gray-950">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-green-500 font-medium">Loading...</p>
-      </div>
+      <WellNestLoader text="Loading trainer dashboard" />
     </div>
   )
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-gray-100">
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-gray-950/80 border-b border-green-500/20">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-gray-950/80 border-b border-orange-500/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+          <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent">
             WellNest
           </h1>
         </div>
@@ -99,7 +97,7 @@ export default function TrainerDashboard() {
       {/* Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex justify-center">
-            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent">
             Your Clients
           </h1>
         </div>
@@ -117,15 +115,15 @@ export default function TrainerDashboard() {
             {clients.map((client) => (
               <div
                 key={client.clientEmail}
-                className="group bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-green-500/40 rounded-2xl p-6 flex flex-col space-y-5 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10"
+                className="group bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-orange-500/40 rounded-2xl p-6 flex flex-col space-y-5 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10"
               >
                 {/* Client Info */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white font-bold text-lg">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-lg">
                       {(client.profile?.name || "U").charAt(0).toUpperCase()}
                     </div>
-                    <h2 className="text-xl font-semibold text-green-400 group-hover:text-green-300 transition-colors">
+                    <h2 className="text-xl font-semibold text-orange-400 group-hover:text-orange-300 transition-colors">
                       {client.profile?.name || "Unknown"}
                     </h2>
                   </div>
@@ -161,7 +159,7 @@ export default function TrainerDashboard() {
                   {/* Contact */}
                   <a
                     href={`mailto:${client.clientEmail}`}
-                    className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-400 text-gray-900 font-semibold py-2.5 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-gray-900 font-semibold py-2.5 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -170,18 +168,18 @@ export default function TrainerDashboard() {
                   </a>
                   <Link
                     to={`/chat/${client.clientEmail}`}
-                    className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-400 text-black font-semibold py-2.5 rounded-xl transition-all"
+                    className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-black font-semibold py-2.5 rounded-xl transition-all"
                     >💬 Chat</Link>
                   <div className="flex flex-col space-y-2">
                     <textarea
-                      className="w-full p-3 rounded-xl bg-gray-800/70 border border-gray-700 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 resize-none transition-all duration-200"
+                      className="w-full p-3 rounded-xl bg-gray-800/70 border border-gray-700 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 resize-none transition-all duration-200"
                       rows={3}
                       placeholder="Assign a task..."
                       value={tasks[client.clientEmail] || ""}
                       onChange={(e) => handleTaskChange(client.clientEmail, e.target.value)}
                     />
                     <button
-                      className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 border border-green-500/30 hover:border-green-500/50 text-green-400 font-medium py-2.5 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                      className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 border border-orange-500/30 hover:border-orange-500/50 text-orange-400 font-medium py-2.5 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                       onClick={() => sendTask(client.clientEmail)}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -192,7 +190,7 @@ export default function TrainerDashboard() {
                   </div>
 
                   {/* Schedule Meeting */}
-                  <button className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 border border-green-500/30 hover:border-green-500/50 text-green-400 font-medium py-2.5 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]" onClick={scheduleMeeting}>
+                  <button className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 border border-orange-500/30 hover:border-orange-500/50 text-orange-400 font-medium py-2.5 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]" onClick={scheduleMeeting}>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>

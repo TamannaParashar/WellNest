@@ -164,7 +164,7 @@ const handleResetVerification=async(e)=>{
 }
 
   return (
-    <div className="max-h-screen overflow-y-hidden bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center p-4">
+    <div className="max-h-screen overflow-y-hidden bg-gradient-to-br from-slate-50 via-emerald-50/30 to-teal-50 flex items-center justify-center p-4">
       <div className="w-full max-w-5xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-2xl bg-white min-h-[500px]">
           <div className="hidden lg:block h-full">
@@ -178,7 +178,7 @@ const handleResetVerification=async(e)=>{
           <div className="flex flex-col justify-center p-8 lg:p-10 min-h-[500px]">
             <div className="mb-8">
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                Welcome to <span className="text-green-500">WellNest</span>
+                Welcome to <span className="text-emerald-600">WellNest</span>
               </h1>
             </div>
 
@@ -189,7 +189,7 @@ const handleResetVerification=async(e)=>{
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-6 py-2 rounded-md font-semibold text-sm transition-all duration-300 ${
-                    activeTab === tab ? "bg-green-500 text-white shadow-md" : "text-gray-600 hover:text-gray-900"
+                    activeTab === tab ? "bg-emerald-600 text-white shadow-md" : "text-gray-600 hover:text-gray-900"
                   }`}
                 >
                   {tab === "user" ? "User" : "Trainer"}
@@ -226,7 +226,7 @@ const handleResetVerification=async(e)=>{
 
               {/* Forgot Password */}
               <div className="flex justify-end">
-                <button onClick={handleForgotPassword} className="text-sm text-green-500 hover:text-emerald-700 font-semibold">
+                <button onClick={handleForgotPassword} className="text-sm text-emerald-600 hover:text-emerald-700 font-semibold">
                   Forgot password?
                 </button>
               </div>
@@ -236,7 +236,7 @@ const handleResetVerification=async(e)=>{
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-70"
+                  className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-70"
                 >
                   {isLoading ? "Logging in..." : `Login as ${activeTab === "user" ? "User" : "Trainer"}`}
                 </button>
@@ -255,7 +255,7 @@ const handleResetVerification=async(e)=>{
             {activeTab === "user" && (
             <p className="text-center text-gray-600">
               Don't have an account?{" "}
-              <button onClick={handleCreateAccount} className="text-green-500 font-semibold hover:text-emerald-700">
+              <button onClick={handleCreateAccount} className="text-emerald-600 font-semibold hover:text-emerald-700">
                 Create Account
               </button>
             </p>)}
@@ -267,12 +267,12 @@ const handleResetVerification=async(e)=>{
           <div className="bg-white p-6 rounded-xl shadow-xl text-center">
           <h2 className="text-lg font-bold mb-4">Enter Verification Code</h2>
           <div className="flex gap-3 justify-center mb-4">
-            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-green-500" ref={d1} />
-            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-green-500" ref={d2} />
-            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-green-500" ref={d3} />
-            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-green-500" ref={d4} />
-            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-green-500" ref={d5} />
-            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-green-500" ref={d6} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-emerald-500 rounded-lg" ref={d1} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-emerald-500 rounded-lg" ref={d2} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-emerald-500 rounded-lg" ref={d3} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-emerald-500 rounded-lg" ref={d4} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-emerald-500 rounded-lg" ref={d5} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-emerald-500 rounded-lg" ref={d6} />
           </div>
           <button onClick={handleVerification}>Submit</button>
         </div>
@@ -283,18 +283,18 @@ const handleResetVerification=async(e)=>{
           <div className="bg-white p-6 rounded-xl shadow-xl text-center">
           <h2 className="text-lg font-bold mb-4">Enter Verification Code</h2>
           <div className="flex gap-3 justify-center mb-4">
-            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-green-500" ref={r1} />
-            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-green-500" ref={r2} />
-            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-green-500" ref={r3} />
-            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-green-500" ref={r4} />
-            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-green-500" ref={r5} />
-            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-green-500" ref={r6} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-emerald-500 rounded-lg" ref={r1} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-emerald-500 rounded-lg" ref={r2} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-emerald-500 rounded-lg" ref={r3} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-emerald-500 rounded-lg" ref={r4} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-emerald-500 rounded-lg" ref={r5} />
+            <input maxLength={1} className="h-12 w-12 text-center text-xl border-2 border-emerald-500 rounded-lg" ref={r6} />
           </div>
           <div className="m-4">
-            <input type="password" placeholder="Enter new password" ref={pswd} className="w-full px-4 py-3 border-2 border-green-500 text-black" />
+            <input type="password" placeholder="Enter new password" ref={pswd} className="w-full px-4 py-3 border-2 border-emerald-500 rounded-lg text-black" />
           </div>
           <div className="m-4">
-            <input type="password" placeholder="Confirm password" ref={confirmpswd} className="w-full px-4 py-3 border-2 border-green-500 text-black" />
+            <input type="password" placeholder="Confirm password" ref={confirmpswd} className="w-full px-4 py-3 border-2 border-emerald-500 rounded-lg text-black" />
           </div>
           <button onClick={handleResetVerification}>Submit</button>
         </div>

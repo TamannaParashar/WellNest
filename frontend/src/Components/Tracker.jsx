@@ -12,7 +12,7 @@ export default function Tracker() {
 
   const [activeTab, setActiveTab] = useState("workout")
   const [workouts, setWorkouts] = useState([])
-  const [workoutForm, setWorkoutForm] = useState({ exerciseType: "", duration: "", calories: "", steps: "" })
+  const [workoutForm, setWorkoutForm] = useState({ exerciseType: "", duration: "", calories: "", steps: "", splitDay: "" })
   const [meals, setMeals] = useState([])
   const [mealForm, setMealForm] = useState({ mealType: "", calories: "", protein: "", carbs: "", fats: "" })
   const [waterIntake, setWaterIntake] = useState([])
@@ -20,6 +20,23 @@ export default function Tracker() {
   const [sleepLog, setSleepLog] = useState([])
   const [sleepForm, setSleepForm] = useState({ hours: "", notes: "" })
   const [isSaved, setIsSaved] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const [globalSleepTime, setGlobalSleepTime] = useState("");
+
+  const updateGlobalSleepTime = async (newTime) => {
+    setGlobalSleepTime(newTime);
+    if (!profile) return;
+    const email = user?.primaryEmailAddress?.emailAddress;
+    const updated = { ...profile, sleepTime: newTime };
+    try {
+      await fetch(`http://localhost:8080/api/user-profile/${encodeURIComponent(email)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated),
+      });
+      setProfile(updated);
+    } catch (e) { console.error(e) }
+  }
 
   // Smart Logger States
   const [scanningMeal, setScanningMeal] = useState(false);
@@ -62,6 +79,13 @@ export default function Tracker() {
         } else {
           setIsSaved(false);
         }
+
+        const profRes = await fetch(`http://localhost:8080/api/user-profile/${encodeURIComponent(email)}`);
+        if (profRes.ok) {
+          const profData = await profRes.json();
+          setProfile(profData);
+          setGlobalSleepTime(profData.sleepTime || "");
+        }
       } catch (error) {
         console.error("Failed to fetch daily log:", error);
         setIsSaved(false);
@@ -100,7 +124,7 @@ export default function Tracker() {
       ...workouts,
       { id: Date.now(), ...workoutForm, date: isoToday() },
     ])
-    setWorkoutForm({ exerciseType: "", duration: "", calories: "", steps: "" })
+    setWorkoutForm({ exerciseType: "", duration: "", calories: "", steps: "", splitDay: "" })
   }
 
   const deleteWorkout = (id) => setWorkouts(workouts.filter(w => w.id !== id));
@@ -303,29 +327,29 @@ export default function Tracker() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-slate-950">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-black/95 backdrop-blur-sm border-b border-green-500/30">
+      <header className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-sm border-b border-emerald-500/20">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-green-500/10 rounded-xl border border-green-500/30">
-                <TrendingUp className="w-8 h-8 text-green-500" />
+              <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+                <TrendingUp className="w-8 h-8 text-emerald-500" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-green-500">Wellness Tracker</h1>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Wellness Tracker</h1>
                 <p className="text-gray-500 text-sm mt-1">Monitor your daily health metrics</p>
               </div>
             </div>
             <Link to="/home">
-              <button className="px-6 py-2.5 bg-green-500/10 border border-green-500/50 text-green-500 rounded-lg hover:bg-green-500 hover:text-black transition-all font-semibold">
+              <button className="px-6 py-2.5 bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 rounded-lg hover:bg-emerald-500 hover:text-black transition-all font-semibold">
                 Home
               </button>
             </Link>
           </div>
 
           {/* Tab navigation for better organization */}
-          <div className="flex gap-2 mt-6 border-b border-green-500/20">
+          <div className="flex gap-2 mt-6 border-b border-slate-700/50">
             {[
               { id: "workout", icon: Activity, label: "Workouts" },
               { id: "meal", icon: Utensils, label: "Meals" },
@@ -335,12 +359,12 @@ export default function Tracker() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-3 font-semibold transition-all relative ${activeTab === tab.id ? "text-green-500" : "text-gray-500 hover:text-gray-300"
+                className={`flex items-center gap-2 px-6 py-3 font-semibold transition-all relative ${activeTab === tab.id ? (tab.id === 'workout' ? 'text-emerald-400' : tab.id === 'meal' ? 'text-amber-400' : tab.id === 'water' ? 'text-blue-400' : 'text-purple-400') : "text-gray-500 hover:text-gray-300"
                   }`}
               >
                 <tab.icon className="w-5 h-5" />
                 {tab.label}
-                {activeTab === tab.id && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-500" />}
+                {activeTab === tab.id && <div className={`absolute bottom-0 left-0 right-0 h-0.5 ${tab.id === 'workout' ? 'bg-emerald-500' : tab.id === 'meal' ? 'bg-amber-500' : tab.id === 'water' ? 'bg-blue-500' : 'bg-purple-500'}`} />}
               </button>
             ))}
           </div>
@@ -350,19 +374,19 @@ export default function Tracker() {
       <main className="max-w-7xl mx-auto px-6 py-12">
         {activeTab === "workout" && (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-8">
+            <div className="bg-gradient-to-br from-emerald-500/8 to-transparent border border-emerald-500/20 rounded-2xl p-8">
               <div className="flex items-center gap-3 mb-8">
-                <Activity className="w-7 h-7 text-green-500" />
+                <Activity className="w-7 h-7 text-emerald-500" />
                 <h2 className="text-2xl font-bold text-white">Log Your Workout</h2>
               </div>
 
               <div className="grid md:grid-cols-3 gap-6 mb-6">
                 <div>
-                  <label className="block text-sm font-semibold text-green-500 mb-2">Exercise Type</label>
+                  <label className="block text-sm font-semibold text-emerald-400 mb-2">Exercise Type</label>
                   <select
                     value={workoutForm.exerciseType}
                     onChange={(e) => setWorkoutForm({ ...workoutForm, exerciseType: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-all"
                   >
                     <option value="">Select Exercise</option>
                     <option value="Cardio">Cardio</option>
@@ -375,33 +399,43 @@ export default function Tracker() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-green-500 mb-2">Duration (min)</label>
+                  <label className="block text-sm font-semibold text-emerald-400 mb-2">Duration (min)</label>
                   <input
                     type="number"
                     placeholder="30"
                     value={workoutForm.duration}
                     onChange={(e) => setWorkoutForm({ ...workoutForm, duration: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-gray-600 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-green-500 mb-2">Calories (optional)</label>
+                  <label className="block text-sm font-semibold text-emerald-400 mb-2">Calories (optional)</label>
                   <input
                     type="number"
                     placeholder="250"
                     value={workoutForm.calories}
                     onChange={(e) => setWorkoutForm({ ...workoutForm, calories: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-gray-600 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-green-500 mb-2">Steps (optional)</label>
+                  <label className="block text-sm font-semibold text-emerald-400 mb-2">Steps (optional)</label>
                   <input
                     type="number"
                     placeholder="5000"
                     value={workoutForm.steps}
                     onChange={(e) => setWorkoutForm({ ...workoutForm, steps: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-gray-600 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-emerald-400 mb-2">Today's Specific Split (e.g. Push, Legs)</label>
+                  <input
+                    type="text"
+                    placeholder="Leg Day, Chest/Tris, etc."
+                    value={workoutForm.splitDay}
+                    onChange={(e) => setWorkoutForm({ ...workoutForm, splitDay: e.target.value })}
+                    className="w-full px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-gray-600 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-all"
                   />
                 </div>
 
@@ -409,7 +443,7 @@ export default function Tracker() {
 
               <button
                 onClick={addWorkout}
-                className="px-8 py-3 bg-green-500 text-black rounded-xl hover:bg-green-400 transition-all font-bold flex items-center gap-2 shadow-lg shadow-green-500/30 hover:shadow-green-500/50"
+                className="px-8 py-3 bg-emerald-500 text-black rounded-xl hover:bg-emerald-400 transition-all font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50"
               >
                 <Plus className="w-5 h-5" />
                 Add Workout
@@ -420,21 +454,26 @@ export default function Tracker() {
             {workouts.length > 0 && (
               <div>
                 <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-green-500" />
+                  <Calendar className="w-5 h-5 text-emerald-500" />
                   Recent Workouts
                 </h3>
                 <div className="grid gap-4">
                   {workouts.map((workout) => (
                     <div
                       key={workout.id}
-                      className="bg-black/40 border border-green-500/20 rounded-xl p-6 hover:border-green-500/50 transition-all group"
+                      className="bg-black/40 border border-emerald-500/15 rounded-xl p-6 hover:border-emerald-500/40 transition-all group"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-3">
-                            <span className="px-3 py-1 bg-green-500/20 text-green-500 rounded-lg text-sm font-semibold">
+                            <span className="px-3 py-1 bg-emerald-500/15 text-emerald-400 rounded-lg text-sm font-semibold">
                               {workout.exerciseType}
                             </span>
+                            {workout.splitDay && (
+                              <span className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-sm font-semibold">
+                                {workout.splitDay}
+                              </span>
+                            )}
                             <span className="text-gray-500 text-sm">{workout.date}</span>
                           </div>
                           <div className="flex gap-6 text-gray-300">
@@ -467,10 +506,10 @@ export default function Tracker() {
 
         {activeTab === "meal" && (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-8">
+            <div className="bg-gradient-to-br from-amber-500/8 to-transparent border border-amber-500/20 rounded-2xl p-8">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
-                  <Utensils className="w-7 h-7 text-green-500" />
+                  <Utensils className="w-7 h-7 text-amber-500" />
                   <h2 className="text-2xl font-bold text-white">Log Your Meal</h2>
                 </div>
                 {/* AI Smart Scan Button */}
@@ -503,11 +542,11 @@ export default function Tracker() {
 
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label className="block text-sm font-semibold text-green-500 mb-2">Meal Type</label>
+                  <label className="block text-sm font-semibold text-amber-400 mb-2">Meal Type</label>
                   <select
                     value={mealForm.mealType}
                     onChange={(e) => setMealForm({ ...mealForm, mealType: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 bg-black/50 border border-amber-500/20 rounded-xl text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                   >
                     <option value="">Select Meal</option>
                     <option value="Breakfast">Breakfast</option>
@@ -517,13 +556,13 @@ export default function Tracker() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-green-500 mb-2">Total Calories</label>
+                  <label className="block text-sm font-semibold text-amber-400 mb-2">Total Calories</label>
                   <input
                     type="number"
                     placeholder="500"
                     value={mealForm.calories}
                     onChange={(e) => setMealForm({ ...mealForm, calories: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 bg-black/50 border border-amber-500/20 rounded-xl text-white placeholder-gray-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                   />
                 </div>
               </div>
@@ -538,7 +577,7 @@ export default function Tracker() {
                       placeholder="25"
                       value={mealForm.protein}
                       onChange={(e) => setMealForm({ ...mealForm, protein: e.target.value })}
-                      className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                      className="w-full px-4 py-3 bg-black/50 border border-amber-500/20 rounded-xl text-white placeholder-gray-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                     />
                   </div>
                   <div>
@@ -548,7 +587,7 @@ export default function Tracker() {
                       placeholder="50"
                       value={mealForm.carbs}
                       onChange={(e) => setMealForm({ ...mealForm, carbs: e.target.value })}
-                      className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                      className="w-full px-4 py-3 bg-black/50 border border-amber-500/20 rounded-xl text-white placeholder-gray-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                     />
                   </div>
                   <div>
@@ -558,7 +597,7 @@ export default function Tracker() {
                       placeholder="15"
                       value={mealForm.fats}
                       onChange={(e) => setMealForm({ ...mealForm, fats: e.target.value })}
-                      className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus;border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                      className="w-full px-4 py-3 bg-black/50 border border-amber-500/20 rounded-xl text-white placeholder-gray-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -566,7 +605,7 @@ export default function Tracker() {
 
               <button
                 onClick={addMeal}
-                className="px-8 py-3 bg-green-500 text-black rounded-xl hover:bg-green-400 transition-all font-bold flex items-center gap-2 shadow-lg shadow-green-500/30 hover:shadow-green-500/50"
+                className="px-8 py-3 bg-amber-500 text-black rounded-xl hover:bg-amber-400 transition-all font-bold flex items-center gap-2 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50"
               >
                 <Plus className="w-5 h-5" />
                 Add Meal
@@ -577,19 +616,19 @@ export default function Tracker() {
             {meals.length > 0 && (
               <div>
                 <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-green-500" />
+                  <Calendar className="w-5 h-5 text-amber-500" />
                   Meal History
                 </h3>
                 <div className="grid gap-4">
                   {meals.map((meal) => (
                     <div
                       key={meal.id}
-                      className="bg-black/40 border border-green-500/20 rounded-xl p-6 hover:border-green-500/50 transition-all group"
+                      className="bg-black/40 border border-amber-500/15 rounded-xl p-6 hover:border-amber-500/40 transition-all group"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-3">
-                            <span className="px-3 py-1 bg-green-500/20 text-green-500 rounded-lg text-sm font-semibold">
+                            <span className="px-3 py-1 bg-amber-500/15 text-amber-400 rounded-lg text-sm font-semibold">
                               {meal.mealType}
                             </span>
                             <span className="text-gray-500 text-sm">{meal.date}</span>
@@ -600,7 +639,7 @@ export default function Tracker() {
                               <p className="text-white font-semibold text-lg">{meal.calories} kcal</p>
                             </div>
                             {(meal.protein || meal.carbs || meal.fats) && (
-                              <div className="flex gap-4 items-center pl-6 border-l border-green-500/30">
+                              <div className="flex gap-4 items-center pl-6 border-l border-amber-500/20">
                                 {meal.protein && (
                                   <div>
                                     <span className="text-gray-500 text-xs">Protein</span>
@@ -640,39 +679,39 @@ export default function Tracker() {
 
         {activeTab === "water" && (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-8">
+            <div className="bg-gradient-to-br from-blue-500/8 to-transparent border border-blue-500/20 rounded-2xl p-8">
               <div className="flex items-center gap-3 mb-8">
-                <Droplet className="w-7 h-7 text-green-500" />
+                <Droplet className="w-7 h-7 text-blue-500" />
                 <h2 className="text-2xl font-bold text-white">Log Water Intake</h2>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label className="block text-sm font-semibold text-green-500 mb-2">Amount (liters)</label>
+                  <label className="block text-sm font-semibold text-blue-400 mb-2">Amount (liters)</label>
                   <input
                     type="number"
                     step="0.1"
                     placeholder="2.5"
                     value={waterForm.amount}
                     onChange={(e) => setWaterForm({ ...waterForm, amount: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 bg-black/50 border border-blue-500/20 rounded-xl text-white placeholder-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-green-500 mb-2">Notes (optional)</label>
+                  <label className="block text-sm font-semibold text-blue-400 mb-2">Notes (optional)</label>
                   <input
                     type="text"
                     placeholder="e.g., felt well hydrated"
                     value={waterForm.notes}
                     onChange={(e) => setWaterForm({ ...waterForm, notes: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 bg-black/50 border border-blue-500/20 rounded-xl text-white placeholder-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all"
                   />
                 </div>
               </div>
 
               <button
                 onClick={addWater}
-                className="px-8 py-3 bg-green-500 text-black rounded-xl hover:bg-green-400 transition-all font-bold flex items-center gap-2 shadow-lg shadow-green-500/30 hover:shadow-green-500/50"
+                className="px-8 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-400 transition-all font-bold flex items-center gap-2 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50"
               >
                 <Plus className="w-5 h-5" />
                 Log Water
@@ -683,19 +722,19 @@ export default function Tracker() {
             {waterIntake.length > 0 && (
               <div>
                 <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-green-500" />
+                  <Calendar className="w-5 h-5 text-blue-500" />
                   Hydration Log
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   {waterIntake.map((water) => (
                     <div
                       key={water.id}
-                      className="bg-black/40 border border-green-500/20 rounded-xl p-5 hover:border-green-500/50 transition-all group"
+                      className="bg-black/40 border border-blue-500/15 rounded-xl p-5 hover:border-blue-500/40 transition-all group"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <span className="text-gray-500 text-sm">{water.date}</span>
-                          <p className="text-2xl font-bold text-green-500 mt-2">{water.amount}L</p>
+                          <p className="text-2xl font-bold text-blue-400 mt-2">{water.amount}L</p>
                           {water.notes && <p className="text-gray-400 text-sm mt-2">{water.notes}</p>}
                         </div>
                         <button
@@ -715,40 +754,49 @@ export default function Tracker() {
 
         {activeTab === "sleep" && (
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-8">
+            <div className="bg-gradient-to-br from-purple-500/8 to-transparent border border-purple-500/20 rounded-2xl p-8">
               <div className="flex items-center gap-3 mb-8">
-                <Moon className="w-7 h-7 text-green-500" />
+                <Moon className="w-7 h-7 text-purple-500" />
                 <h2 className="text-2xl font-bold text-white">Log Sleep</h2>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label className="block text-sm font-semibold text-green-500 mb-2">Hours Slept</label>
+                  <label className="block text-sm font-semibold text-purple-400 mb-2">Hours Slept</label>
                   <input
                     type="number"
                     step="0.5"
                     placeholder="7.5"
                     value={sleepForm.hours}
                     onChange={(e) => setSleepForm({ ...sleepForm, hours: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 bg-black/50 border border-purple-500/20 rounded-xl text-white placeholder-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-indigo-400 mb-2">Configure Tonight's Sleep Alert</label>
+                  <input
+                    type="time"
+                    value={globalSleepTime}
+                    onChange={(e) => updateGlobalSleepTime(e.target.value)}
+                    className="w-full px-4 py-3 bg-indigo-500/10 border border-indigo-500/30 rounded-xl text-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
                   />
                 </div>
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-semibold text-green-500 mb-2">Notes (optional)</label>
+                <label className="block text-sm font-semibold text-purple-400 mb-2">Notes (optional)</label>
                 <input
                   type="text"
                   placeholder="e.g., woke up feeling refreshed"
                   value={sleepForm.notes}
                   onChange={(e) => setSleepForm({ ...sleepForm, notes: e.target.value })}
-                  className="w-full px-4 py-3 bg-black/50 border border-green-500/30 rounded-xl text-white placeholder-gray-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-black/50 border border-purple-500/20 rounded-xl text-white placeholder-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none transition-all"
                 />
               </div>
 
               <button
                 onClick={addSleep}
-                className="px-8 py-3 bg-green-500 text-black rounded-xl hover:bg-green-400 transition-all font-bold flex items-center gap-2 shadow-lg shadow-green-500/30 hover:shadow-green-500/50"
+                className="px-8 py-3 bg-purple-500 text-white rounded-xl hover:bg-purple-400 transition-all font-bold flex items-center gap-2 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50"
               >
                 <Plus className="w-5 h-5" />
                 Log Sleep
@@ -759,22 +807,22 @@ export default function Tracker() {
             {sleepLog.length > 0 && (
               <div>
                 <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-green-500" />
+                  <Calendar className="w-5 h-5 text-purple-500" />
                   Sleep History
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   {sleepLog.map((sleep) => (
                     <div
                       key={sleep.id}
-                      className="bg-black/40 border border-green-500/20 rounded-xl p-5 hover:border-green-500/50 transition-all group"
+                      className="bg-black/40 border border-purple-500/15 rounded-xl p-5 hover:border-purple-500/40 transition-all group"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <span className="text-gray-500 text-sm">{sleep.date}</span>
                           <div className="flex items-baseline gap-3 mt-2">
-                            <p className="text-2xl font-bold text-green-500">{sleep.hours}h</p>
+                            <p className="text-2xl font-bold text-purple-400">{sleep.hours}h</p>
                             {sleep.quality && (
-                              <span className="px-2 py-1 bg-green-500/20 text-green-500 rounded text-xs font-semibold">
+                              <span className="px-2 py-1 bg-purple-500/15 text-purple-400 rounded text-xs font-semibold">
                                 {sleep.quality}
                               </span>
                             )}
@@ -796,7 +844,7 @@ export default function Tracker() {
         <div className="flex justify-center gap-4">
           <button
             disabled={isSaved}
-            className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg ${isSaved ? "bg-gray-600 text-gray-300 cursor-not-allowed" : "bg-green-500 text-black hover:bg-green-400 shadow-green-500/50"}`}
+            className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg ${isSaved ? "bg-gray-600 text-gray-300 cursor-not-allowed" : "bg-emerald-500 text-black hover:bg-emerald-400 shadow-emerald-500/50"}`}
             onClick={saveTracker}
           >
             {isSaved ? "Daily Log Already Saved" : "Daily Log"}
@@ -809,7 +857,7 @@ export default function Tracker() {
             aria-disabled={!isSaved}
             className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg ${!isSaved
               ? "bg-gray-700 text-gray-300 cursor-not-allowed"
-              : "bg-green-500 text-black hover:bg-green-400 shadow-green-500/50"
+              : "bg-emerald-500 text-black hover:bg-emerald-400 shadow-emerald-500/50"
               }`}
             title={!isSaved ? "No saved log for today" : "View today's saved log"}
           >

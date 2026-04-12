@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Activity, Utensils, Droplet, Moon, Calendar, ArrowLeft, Flame, Clock } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useUser } from "@clerk/clerk-react"
+import WellNestLoader from "./WellNestLoader"
 
 export default function ViewLog() {
   const {user} = useUser();
@@ -81,11 +82,8 @@ const today = new Date().toISOString().split("T")[0]
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading your wellness log...</p>
-        </div>
+      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+        <WellNestLoader text="Loading your wellness log" />
       </div>
     )
   }
@@ -98,7 +96,7 @@ const today = new Date().toISOString().split("T")[0]
             <p className="text-red-500 font-semibold">{error || "No data available"}</p>
           </div>
           <Link to="/tracker">
-            <button className="px-6 py-3 bg-green-500 text-black rounded-xl hover:bg-green-400 transition-all font-bold">
+            <button className="px-6 py-3 bg-emerald-500 text-black rounded-xl hover:bg-emerald-400 transition-all font-bold">
               Back to Tracker
             </button>
           </Link>
@@ -108,17 +106,17 @@ const today = new Date().toISOString().split("T")[0]
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-slate-950 text-white">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-black/95 backdrop-blur-sm border-b border-green-500/30">
+      <header className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-sm border-b border-emerald-500/20">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-green-500/10 rounded-xl border border-green-500/30">
-                <Calendar className="w-8 h-8 text-green-500" />
+              <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/30">
+                <Calendar className="w-8 h-8 text-emerald-500" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-green-500">Daily Wellness Log</h1>
+                <h1 className="text-3xl font-bold text-emerald-500">Daily Wellness Log</h1>
                 <p className="text-gray-500 text-sm mt-1">
                   {new Date(today).toLocaleDateString("en-US", {
                     weekday: "long",
@@ -130,7 +128,7 @@ const today = new Date().toISOString().split("T")[0]
               </div>
             </div>
             <Link to="/tracker">
-              <button className="px-6 py-2.5 bg-green-500/10 border border-green-500/50 text-green-500 rounded-lg hover:bg-green-500 hover:text-black transition-all font-semibold flex items-center gap-2">
+              <button className="px-6 py-2.5 bg-emerald-500/10 border border-emerald-500/50 text-emerald-500 rounded-lg hover:bg-emerald-500 hover:text-black transition-all font-semibold flex items-center gap-2">
                 <ArrowLeft className="w-4 h-4" />
                 Back to Tracker
               </button>
@@ -142,36 +140,36 @@ const today = new Date().toISOString().split("T")[0]
       <main className="max-w-7xl mx-auto px-6 py-12">
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-6">
+          <div className="bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/30 rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-3">
-              <Flame className="w-6 h-6 text-green-500" />
+              <Flame className="w-6 h-6 text-emerald-500" />
               <h3 className="text-sm font-semibold text-gray-400">Calories Burned</h3>
             </div>
             <p className="text-3xl font-bold text-white">{totals.totalCaloriesBurned}</p>
             <p className="text-sm text-gray-500 mt-1">kcal</p>
           </div>
 
-          <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-6">
+          <div className="bg-gradient-to-br from-amber-500/8 to-transparent border border-amber-500/20 rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-3">
-              <Utensils className="w-6 h-6 text-green-500" />
+              <Utensils className="w-6 h-6 text-amber-500" />
               <h3 className="text-sm font-semibold text-gray-400">Calories Consumed</h3>
             </div>
             <p className="text-3xl font-bold text-white">{totals.totalCaloriesConsumed}</p>
             <p className="text-sm text-gray-500 mt-1">kcal</p>
           </div>
 
-          <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-6">
+          <div className="bg-gradient-to-br from-blue-500/8 to-transparent border border-blue-500/20 rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-3">
-              <Droplet className="w-6 h-6 text-green-500" />
+              <Droplet className="w-6 h-6 text-blue-500" />
               <h3 className="text-sm font-semibold text-gray-400">Water Intake</h3>
             </div>
             <p className="text-3xl font-bold text-white">{totals.totalWater}</p>
             <p className="text-sm text-gray-500 mt-1">L</p>
           </div>
 
-          <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-6">
+          <div className="bg-gradient-to-br from-purple-500/8 to-transparent border border-purple-500/20 rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-3">
-              <Moon className="w-6 h-6 text-green-500" />
+              <Moon className="w-6 h-6 text-purple-500" />
               <h3 className="text-sm font-semibold text-gray-400">Total Sleep</h3>
             </div>
             <p className="text-3xl font-bold text-white">{totals.totalSleep}</p>
@@ -182,9 +180,9 @@ const today = new Date().toISOString().split("T")[0]
         {/* Workouts Section */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <Activity className="w-7 h-7 text-green-500" />
+            <Activity className="w-7 h-7 text-emerald-500" />
             <h2 className="text-2xl font-bold text-white">Workout Activities</h2>
-            <span className="px-3 py-1 bg-green-500/20 text-green-500 rounded-lg text-sm font-semibold">
+            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-500 rounded-lg text-sm font-semibold">
               {logData.workouts?.length || 0} sessions
             </span>
           </div>
@@ -194,12 +192,12 @@ const today = new Date().toISOString().split("T")[0]
               {logData.workouts.map((workout, index) => (
                 <div
                   key={index}
-                  className="bg-black/40 border border-green-500/20 rounded-xl p-6 hover:border-green-500/50 transition-all"
+                  className="bg-black/40 border border-emerald-500/20 rounded-xl p-6 hover:border-emerald-500/50 transition-all"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-4">
-                        <span className="px-4 py-1.5 bg-green-500/20 text-green-500 rounded-lg text-sm font-bold">
+                        <span className="px-4 py-1.5 bg-emerald-500/20 text-emerald-500 rounded-lg text-sm font-bold">
                           {workout.exerciseType}
                         </span>
                       </div>
@@ -227,7 +225,7 @@ const today = new Date().toISOString().split("T")[0]
               ))}
             </div>
           ) : (
-            <div className="bg-black/40 border border-green-500/20 rounded-xl p-8 text-center">
+            <div className="bg-black/40 border border-emerald-500/20 rounded-xl p-8 text-center">
               <p className="text-gray-500">No workout data recorded</p>
             </div>
           )}
@@ -236,16 +234,16 @@ const today = new Date().toISOString().split("T")[0]
         {/* Meals Section */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <Utensils className="w-7 h-7 text-green-500" />
+            <Utensils className="w-7 h-7 text-emerald-500" />
             <h2 className="text-2xl font-bold text-white">Nutrition & Meals</h2>
-            <span className="px-3 py-1 bg-green-500/20 text-green-500 rounded-lg text-sm font-semibold">
+            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-500 rounded-lg text-sm font-semibold">
               {logData.meals?.length || 0} meals
             </span>
           </div>
 
           {/* Macros Summary */}
           {totals.totalProtein > 0 || totals.totalCarbs > 0 || totals.totalFats > 0 ? (
-            <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-6 mb-6">
+            <div className="bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/30 rounded-2xl p-6 mb-6">
               <h3 className="text-lg font-bold text-white mb-4">Daily Macros</h3>
               <div className="grid grid-cols-3 gap-6">
                 <div>
@@ -269,10 +267,10 @@ const today = new Date().toISOString().split("T")[0]
               {logData.meals.map((meal, index) => (
                 <div
                   key={index}
-                  className="bg-black/40 border border-green-500/20 rounded-xl p-6 hover:border-green-500/50 transition-all"
+                  className="bg-black/40 border border-emerald-500/20 rounded-xl p-6 hover:border-emerald-500/50 transition-all"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <span className="px-4 py-1.5 bg-green-500/20 text-green-500 rounded-lg text-sm font-bold">
+                    <span className="px-4 py-1.5 bg-emerald-500/20 text-emerald-500 rounded-lg text-sm font-bold">
                       {meal.mealType}
                     </span>
                     <div className="text-right">
@@ -282,7 +280,7 @@ const today = new Date().toISOString().split("T")[0]
                   </div>
 
                   {(meal.protein || meal.carbs || meal.fats) && (
-                    <div className="grid grid-cols-3 gap-4 pt-4 border-t border-green-500/10">
+                    <div className="grid grid-cols-3 gap-4 pt-4 border-t border-emerald-500/10">
                       {meal.protein > 0 && (
                         <div>
                           <p className="text-gray-500 text-xs mb-1">Protein</p>
@@ -307,7 +305,7 @@ const today = new Date().toISOString().split("T")[0]
               ))}
             </div>
           ) : (
-            <div className="bg-black/40 border border-green-500/20 rounded-xl p-8 text-center">
+            <div className="bg-black/40 border border-emerald-500/20 rounded-xl p-8 text-center">
               <p className="text-gray-500">No meal data recorded</p>
             </div>
           )}
@@ -316,9 +314,9 @@ const today = new Date().toISOString().split("T")[0]
         {/* Water Intake Section */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <Droplet className="w-7 h-7 text-green-500" />
+            <Droplet className="w-7 h-7 text-emerald-500" />
             <h2 className="text-2xl font-bold text-white">Water Intake</h2>
-            <span className="px-3 py-1 bg-green-500/20 text-green-500 rounded-lg text-sm font-semibold">
+            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-500 rounded-lg text-sm font-semibold">
               {logData.waterIntake?.length || 0} entries
             </span>
           </div>
@@ -328,17 +326,17 @@ const today = new Date().toISOString().split("T")[0]
               {logData.waterIntake.map((water, index) => (
                 <div
                   key={index}
-                  className="bg-black/40 border border-green-500/20 rounded-xl p-6 hover:border-green-500/50 transition-all"
+                  className="bg-black/40 border border-emerald-500/20 rounded-xl p-6 hover:border-emerald-500/50 transition-all"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <Droplet className="w-5 h-5 text-green-500" />
+                      <Droplet className="w-5 h-5 text-emerald-500" />
                       <span className="text-gray-500 text-sm">Amount</span>
                     </div>
                     <p className="text-2xl font-bold text-white">{water.amount} L</p>
                   </div>
                   {water.notes && (
-                    <div className="pt-3 border-t border-green-500/10">
+                    <div className="pt-3 border-t border-emerald-500/10">
                       <p className="text-gray-500 text-xs mb-1">Notes</p>
                       <p className="text-gray-300 text-sm">{water.notes}</p>
                     </div>
@@ -347,7 +345,7 @@ const today = new Date().toISOString().split("T")[0]
               ))}
             </div>
           ) : (
-            <div className="bg-black/40 border border-green-500/20 rounded-xl p-8 text-center">
+            <div className="bg-black/40 border border-emerald-500/20 rounded-xl p-8 text-center">
               <p className="text-gray-500">No water intake data recorded</p>
             </div>
           )}
@@ -356,9 +354,9 @@ const today = new Date().toISOString().split("T")[0]
         {/* Sleep Log Section */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <Moon className="w-7 h-7 text-green-500" />
+            <Moon className="w-7 h-7 text-emerald-500" />
             <h2 className="text-2xl font-bold text-white">Sleep Log</h2>
-            <span className="px-3 py-1 bg-green-500/20 text-green-500 rounded-lg text-sm font-semibold">
+            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-500 rounded-lg text-sm font-semibold">
               {logData.sleepLog?.length || 0} entries
             </span>
           </div>
@@ -368,11 +366,11 @@ const today = new Date().toISOString().split("T")[0]
               {logData.sleepLog.map((sleep, index) => (
                 <div
                   key={index}
-                  className="bg-black/40 border border-green-500/20 rounded-xl p-6 hover:border-green-500/50 transition-all"
+                  className="bg-black/40 border border-emerald-500/20 rounded-xl p-6 hover:border-emerald-500/50 transition-all"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                      <Moon className="w-5 h-5 text-green-500" />
+                      <Moon className="w-5 h-5 text-emerald-500" />
                       <span className="text-gray-500 text-sm">Duration</span>
                     </div>
                     <p className="text-2xl font-bold text-white">{sleep.hours} hrs</p>
@@ -386,7 +384,7 @@ const today = new Date().toISOString().split("T")[0]
                           <span
                             className={`px-3 py-1 rounded-lg text-sm font-semibold ${
                               sleep.quality.toLowerCase() === "excellent"
-                                ? "bg-green-500/20 text-green-500"
+                                ? "bg-emerald-500/20 text-emerald-500"
                                 : sleep.quality.toLowerCase() === "good"
                                   ? "bg-blue-500/20 text-blue-500"
                                   : sleep.quality.toLowerCase() === "fair"
@@ -400,7 +398,7 @@ const today = new Date().toISOString().split("T")[0]
                       </div>
                     )}
                     {sleep.notes && (
-                      <div className="pt-3 border-t border-green-500/10">
+                      <div className="pt-3 border-t border-emerald-500/10">
                         <p className="text-gray-500 text-xs mb-1">Notes</p>
                         <p className="text-gray-300 text-sm">{sleep.notes}</p>
                       </div>
@@ -410,14 +408,14 @@ const today = new Date().toISOString().split("T")[0]
               ))}
             </div>
           ) : (
-            <div className="bg-black/40 border border-green-500/20 rounded-xl p-8 text-center">
+            <div className="bg-black/40 border border-emerald-500/20 rounded-xl p-8 text-center">
               <p className="text-gray-500">No sleep data recorded</p>
             </div>
           )}
         </div>
 
         {/* Net Calories */}
-        <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-8">
+        <div className="bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/30 rounded-2xl p-8">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xl font-bold text-white mb-2">Net Calorie Balance</h3>
@@ -427,7 +425,7 @@ const today = new Date().toISOString().split("T")[0]
               <p
                 className={`text-4xl font-bold ${
                   totals.totalCaloriesConsumed - totals.totalCaloriesBurned > 0
-                    ? "text-green-500"
+                    ? "text-emerald-500"
                     : totals.totalCaloriesConsumed - totals.totalCaloriesBurned < 0
                       ? "text-red-500"
                       : "text-gray-400"

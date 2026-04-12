@@ -8,6 +8,7 @@ import {Link} from "react-router-dom"
 import { useUser } from "@clerk/clerk-react"
 import { motion } from "framer-motion"
 import AIHealthInsights from "./AIHealthInsights"
+import WellNestLoader from "./WellNestLoader"
 import AITodayPlan from "./AITodayPlan"
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Tooltip, Legend)
@@ -29,6 +30,8 @@ export default function Dashboard() {
   goalCalories: 0,
   goalExerciseMinutes: 0,
 })
+
+
 
 
   useEffect(() => {
@@ -139,11 +142,8 @@ export default function Dashboard() {
 
   if (loading)
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading Dashboard...</p>
-        </div>
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <WellNestLoader text="Loading your wellness data" />
       </div>
     )
 
@@ -169,28 +169,28 @@ export default function Dashboard() {
     plugins: {
       legend: {
         labels: {
-          color: "rgb(134, 239, 172)",
+          color: "rgb(209, 213, 219)",
           font: { size: 13, weight: "600" },
           padding: 15,
         },
       },
       tooltip: {
         backgroundColor: "rgba(0, 0, 0, 0.9)",
-        borderColor: "rgba(34, 197, 94, 0.3)",
+        borderColor: "rgba(148, 163, 184, 0.2)",
         borderWidth: 1,
         padding: 12,
-        titleColor: "rgb(134, 239, 172)",
+        titleColor: "rgb(209, 213, 219)",
         bodyColor: "white",
       },
     },
     scales: {
       x: {
         ticks: { color: "rgb(156, 163, 175)", font: { size: 12 } },
-        grid: { color: "rgba(34, 197, 94, 0.1)" },
+        grid: { color: "rgba(148, 163, 184, 0.08)" },
       },
       y: {
         ticks: { color: "rgb(156, 163, 175)", font: { size: 12 } },
-        grid: { color: "rgba(34, 197, 94, 0.1)" },
+        grid: { color: "rgba(148, 163, 184, 0.08)" },
       },
     },
   }
@@ -240,25 +240,27 @@ if (weeklyTargets.calories > 0 || weeklyTargets.exercise > 0 || weeklyTargets.st
 
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-slate-950">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-black/95 backdrop-blur-sm border-b border-green-500/30">
+      <header className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-sm border-b border-emerald-500/20">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-green-500/10 rounded-xl border border-green-500/30">
-                <TrendingUp className="w-8 h-8 text-green-500" />
+              <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+                <TrendingUp className="w-8 h-8 text-emerald-500" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-green-500">Wellness Dashboard</h1>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Wellness Dashboard</h1>
                 <p className="text-gray-500 text-sm mt-1">Your 7-day health analytics</p>
               </div>
             </div>
-            <Link to="/home">
-              <button className="px-6 py-2.5 bg-green-500/10 border border-green-500/50 text-green-500 rounded-lg hover:bg-green-500 hover:text-black transition-all font-semibold">
-                Home
-              </button>
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link to="/home">
+                <button className="px-6 py-2.5 bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 rounded-lg hover:bg-emerald-500 hover:text-black transition-all font-semibold">
+                  Home
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -285,9 +287,9 @@ if (weeklyTargets.calories > 0 || weeklyTargets.exercise > 0 || weeklyTargets.st
                   <span className="text-lg font-bold text-orange-400">{streak} Day Streak!</span>
                 </motion.div>
               )}
-               <div className="px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-xl flex items-center gap-2">
+               <div className="px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center gap-2">
                  {isTrendingUp ? (
-                   <ArrowUpRight className="w-5 h-5 text-green-500" />
+                   <ArrowUpRight className="w-5 h-5 text-emerald-500" />
                  ) : (
                    <ArrowDownRight className="w-5 h-5 text-red-500" />
                  )}
@@ -307,8 +309,8 @@ if (weeklyTargets.calories > 0 || weeklyTargets.exercise > 0 || weeklyTargets.st
 
         {/* Health Score Banner */}
         {!loading && weekData.length > 0 && (
-           <div className="w-full bg-gradient-to-r from-green-900/40 via-black to-emerald-900/40 border-y border-green-500/30 py-8 mb-12 flex items-center justify-center relative overflow-hidden">
-              <div className="absolute top-0 left-1/4 w-64 h-64 bg-green-500/10 rounded-full blur-3xl shadow-[0_0_50px_rgba(34,197,94,0.3)]"></div>
+           <div className="w-full bg-gradient-to-r from-emerald-900/30 via-slate-950 to-teal-900/30 border-y border-emerald-500/20 py-8 mb-12 flex items-center justify-center relative overflow-hidden">
+              <div className="absolute top-0 left-1/4 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl shadow-[0_0_50px_rgba(5,150,105,0.2)]"></div>
               <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
                  <div className="relative">
                    <svg className="w-32 h-32 transform -rotate-90">
@@ -318,7 +320,7 @@ if (weeklyTargets.calories > 0 || weeklyTargets.exercise > 0 || weeklyTargets.st
                        animate={{ strokeDasharray: `${(healthScore / 100) * 377} 400` }} 
                        transition={{ duration: 2, ease: "easeOut" }}
                        cx="64" cy="64" r="60" fill="none" stroke="currentColor" strokeWidth="8" 
-                       className={`${healthScore >= 80 ? 'text-green-500' : healthScore >= 50 ? 'text-yellow-500' : 'text-red-500'}`} 
+                       className={`${healthScore >= 80 ? 'text-emerald-500' : healthScore >= 50 ? 'text-yellow-500' : 'text-red-500'}`} 
                      />
                    </svg>
                    <div className="absolute inset-0 flex items-center justify-center flex-col">
@@ -327,7 +329,7 @@ if (weeklyTargets.calories > 0 || weeklyTargets.exercise > 0 || weeklyTargets.st
                  </div>
                  <div>
                    <h3 className="text-3xl font-bold text-white mb-2 flex items-center justify-center md:justify-start gap-3">
-                     <ShieldCheck className="w-8 h-8 text-green-400" /> Weekly Health Score
+                     <ShieldCheck className="w-8 h-8 text-emerald-400" /> Weekly Health Score
                    </h3>
                    <p className="text-gray-300 max-w-lg text-lg">
                      {healthScore >= 80 ? "Outstanding performance! You are crushing your wellness goals this week." : 
@@ -341,17 +343,17 @@ if (weeklyTargets.calories > 0 || weeklyTargets.exercise > 0 || weeklyTargets.st
 
         {/* AI Health Visualizer */}
         {!loading && weekData.length > 0 && (
-          <AIHealthInsights weekData={weekData} userName={name} />
+          <AIHealthInsights weekData={weekData} userName={name} healthScore={healthScore} />
         )}
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/30 rounded-2xl p-6 hover:border-green-500/50 transition-all">
+          <div className="bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/30 rounded-2xl p-6 hover:border-emerald-500/50 transition-all">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-green-500/20 rounded-xl">
-                <Flame className="w-6 h-6 text-green-500" />
+              <div className="p-3 bg-emerald-500/20 rounded-xl">
+                <Flame className="w-6 h-6 text-emerald-500" />
               </div>
-              <span className="text-green-500 text-sm font-semibold">Total</span>
+              <span className="text-emerald-500 text-sm font-semibold">Total</span>
             </div>
             <p className="text-3xl font-bold text-white mb-1">{weekSummary.totalCaloriesBurned.toLocaleString()}</p>
             <p className="text-gray-500 text-sm">Calories Burned</p>
@@ -394,10 +396,10 @@ if (weeklyTargets.calories > 0 || weeklyTargets.exercise > 0 || weeklyTargets.st
         {/* Charts Grid */}
         <div className="space-y-8">
           {/* Calories Overview */}
-          <div className="bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/20 rounded-2xl p-8 hover:border-green-500/40 transition-all">
+          <div className="bg-gradient-to-br from-emerald-500/5 to-transparent border border-emerald-500/20 rounded-2xl p-8 hover:border-emerald-500/40 transition-all">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-green-500/20 rounded-lg">
-                <Activity className="w-5 h-5 text-green-500" />
+              <div className="p-2 bg-emerald-500/20 rounded-lg">
+                <Activity className="w-5 h-5 text-emerald-500" />
               </div>
               <h3 className="text-xl font-bold text-white">Calories Overview</h3>
             </div>
@@ -498,10 +500,10 @@ if (weeklyTargets.calories > 0 || weeklyTargets.exercise > 0 || weeklyTargets.st
           </div>
 
 {/* 🎯 Goal Tracker */}
-<div className="bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/20 rounded-2xl p-8 hover:border-green-500/40 transition-all">
+<div className="bg-gradient-to-br from-teal-500/5 to-blue-500/5 border border-teal-500/20 rounded-2xl p-8 hover:border-teal-500/40 transition-all">
   <div className="flex items-center gap-3 mb-6">
-    <div className="p-2 bg-green-500/20 rounded-lg">
-      <TrendingUp className="w-5 h-5 text-green-500" />
+    <div className="p-2 bg-teal-500/20 rounded-lg">
+      <TrendingUp className="w-5 h-5 text-teal-500" />
     </div>
     <h3 className="text-xl font-bold text-white">Goal Tracker</h3>
   </div>
@@ -531,7 +533,7 @@ if (weeklyTargets.calories > 0 || weeklyTargets.exercise > 0 || weeklyTargets.st
       if (percentage < 50) colorClass = "bg-red-500"
       else if (percentage <= 75) colorClass = "bg-yellow-500"
       else if (percentage <= 99) colorClass = "bg-blue-500"
-      else colorClass = "bg-green-500"
+      else colorClass = "bg-emerald-500"
 
       const getInsight = (pct) => {
         if (pct < 50) return `You are just getting started with ${label.toLowerCase()}. Try to increase your activity!`
@@ -559,10 +561,10 @@ if (weeklyTargets.calories > 0 || weeklyTargets.exercise > 0 || weeklyTargets.st
 
 
           {/* Macros Breakdown */}
-          <div className="bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/20 rounded-2xl p-8 hover:border-green-500/40 transition-all">
+          <div className="bg-gradient-to-br from-amber-500/5 to-transparent border border-amber-500/20 rounded-2xl p-8 hover:border-amber-500/40 transition-all">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-green-500/20 rounded-lg">
-                <Zap className="w-5 h-5 text-green-500" />
+              <div className="p-2 bg-amber-500/20 rounded-lg">
+                <Zap className="w-5 h-5 text-amber-500" />
               </div>
               <h3 className="text-xl font-bold text-white">Macros Breakdown (grams)</h3>
             </div>
@@ -603,12 +605,12 @@ if (weeklyTargets.calories > 0 || weeklyTargets.exercise > 0 || weeklyTargets.st
                     x: {
                       stacked: true,
                       ticks: { color: "rgb(156, 163, 175)", font: { size: 12 } },
-                      grid: { color: "rgba(34, 197, 94, 0.1)" },
+                      grid: { color: "rgba(148, 163, 184, 0.08)" },
                     },
                     y: {
                       stacked: true,
                       ticks: { color: "rgb(156, 163, 175)", font: { size: 12 } },
-                      grid: { color: "rgba(34, 197, 94, 0.1)" },
+                      grid: { color: "rgba(148, 163, 184, 0.08)" },
                     },
                   },
                 }}

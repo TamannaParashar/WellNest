@@ -80,14 +80,14 @@ export default function ClientChat() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 flex items-center justify-center p-4 md:p-8">
-      <div className="w-full max-w-2xl h-[85vh] flex flex-col bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl shadow-2xl shadow-green-500/5 overflow-hidden">
+      <div className="w-full max-w-2xl h-[85vh] flex flex-col bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-3xl shadow-2xl shadow-emerald-500/5 overflow-hidden">
 
         {/* Header */}
-        <header className="flex items-center justify-between px-6 py-4 bg-gray-950/80 border-b border-green-500/20">
+        <header className="flex items-center justify-between px-6 py-4 bg-gray-950/80 border-b border-emerald-500/20">
           <div className="flex items-center gap-4">
             <Link
               to="/trainers"
-              className="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-800/80 hover:bg-gray-700 border border-gray-700 hover:border-green-500/40 text-gray-400 hover:text-green-400 transition-all duration-200"
+              className="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-800/80 hover:bg-gray-700 border border-gray-700 hover:border-emerald-500/40 text-gray-400 hover:text-emerald-400 transition-all duration-200"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -95,7 +95,7 @@ export default function ClientChat() {
             </Link>
 
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-green-500/20">
+              <div className="w-11 h-11 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-emerald-500/20">
                 {(trainerEmail?.charAt(0) || "T").toUpperCase()}
               </div>
               <div>
@@ -106,9 +106,9 @@ export default function ClientChat() {
             </div>
           </div>
 
-          <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            <span className="text-xs text-green-400 font-medium">Online</span>
+          <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="text-xs text-emerald-400 font-medium">Online</span>
           </span>
         </header>
 
@@ -128,7 +128,7 @@ export default function ClientChat() {
                 <div
                   className={`max-w-[75%] px-4 py-3 rounded-2xl ${
                     m.sender === "CLIENT"
-                      ? "bg-gradient-to-br from-green-500 to-emerald-600 text-gray-900 rounded-br-md shadow-lg shadow-green-500/20"
+                      ? "bg-gradient-to-br from-emerald-500 to-emerald-600 text-gray-900 rounded-br-md shadow-lg shadow-emerald-500/20"
                       : "bg-gray-800/80 text-gray-100 rounded-bl-md border border-gray-700/50"
                   }`}
                 >
@@ -154,7 +154,7 @@ export default function ClientChat() {
             <button
               onClick={sendMessage}
               disabled={!text.trim()}
-              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 text-black font-bold disabled:opacity-50"
+              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-black font-bold disabled:opacity-50"
             >
               ➤
             </button>

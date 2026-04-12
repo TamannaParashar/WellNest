@@ -1,9 +1,9 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { GoogleGenAI, Type} from "@google/genai";
 import { Sparkles, AlertTriangle, TrendingUp, Activity, CheckCircle, BrainCircuit } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function AIHealthInsights({ weekData, userName }) {
+export default function AIHealthInsights({ weekData, userName, healthScore }) {
   const [loading, setLoading] = useState(false);
   const [insights, setInsights] = useState(null);
   const [error, setError] = useState(null);
@@ -35,16 +35,14 @@ export default function AIHealthInsights({ weekData, userName }) {
         
         Analyze this data. Identify patterns, health trends, and importantly, anomalies (e.g., severe lack of sleep on a day, caloric deficits/surpluses, low water intake, missed workouts).
         Provide actionable recommendations on how the user can improve starting today.
+        Most importantly, extrapolate these data trends over the next 30 days based ON THEIR DIETARY TRENDS and MACROS. Provide predictive health alerts on what will happen to them physically. For example: "If this trend continues, you may gain fat in 30 days due to a consistent calorie surplus" or "You are at risk of losing muscle mass because your protein intake is consistently low". 
+        Do NOT calculate or return a numeric score — focus only on qualitative analysis.
       `;
 
       // 3. Define the Structured Schema for reliable rendering
       const responseSchema = {
         type: Type.OBJECT,
         properties: {
-          overall_score: {
-             type: Type.INTEGER,
-             description: "A calculated health score out of 100 based on the week's performance"
-          },
           trend_summary: {
              type: Type.STRING,
              description: "A short motivational paragraph summarizing how the week went"
@@ -58,9 +56,14 @@ export default function AIHealthInsights({ weekData, userName }) {
              type: Type.ARRAY,
              description: "A list of specific, highly actionable recommendations",
              items: { type: Type.STRING }
+          },
+          predictive_alerts: {
+             type: Type.ARRAY,
+             description: "A list of future predictive warnings or confirmations based primarily on extrapolating their dietary and macro tracking data",
+             items: { type: Type.STRING }
           }
         },
-        required: ["overall_score", "trend_summary", "anomalies", "recommendations"]
+        required: ["trend_summary", "anomalies", "recommendations", "predictive_alerts"]
       };
 
       // 4. Call the Model
@@ -151,19 +154,20 @@ export default function AIHealthInsights({ weekData, userName }) {
                     <circle cx="64" cy="64" r="60" fill="none" stroke="currentColor" strokeWidth="8" className="text-gray-800" />
                     <motion.circle 
                       initial={{ strokeDasharray: "0 400" }}
-                      animate={{ strokeDasharray: `\${(insights.overall_score / 100) * 377} 400` }}
+                      animate={{ strokeDasharray: `${((healthScore ?? 0) / 100) * 377} 400` }}
                       transition={{ duration: 1.5, ease: "easeOut" }}
                       cx="64" cy="64" r="60" fill="none" stroke="currentColor" strokeWidth="8" 
-                      className={`\${
-                        insights.overall_score >= 80 ? 'text-green-500' : 
-                        insights.overall_score >= 50 ? 'text-yellow-500' : 'text-red-500'
+                      className={`${
+                        (healthScore ?? 0) >= 80 ? 'text-emerald-500' : 
+                        (healthScore ?? 0) >= 50 ? 'text-yellow-500' : 'text-red-500'
                       }`}
                     />
                   </svg>
                   <div className="absolute text-3xl font-bold text-white">
-                    {insights.overall_score}
+                    {healthScore ?? 0}
                   </div>
                 </div>
+                <p className="text-xs text-indigo-400 font-medium mb-2 uppercase tracking-wider">Goal-based score</p>
                 <p className="text-gray-300 italic text-sm">"{insights.trend_summary}"</p>
               </div>
 
@@ -188,7 +192,7 @@ export default function AIHealthInsights({ weekData, userName }) {
                      ))}
                    </ul>
                   ) : (
-                    <p className="text-green-400 text-sm">No major anomalies detected. Great consistency!</p>
+                    <p className="text-emerald-400 text-sm">No major anomalies detected. Great consistency!</p>
                   )}
                 </div>
 
@@ -210,6 +214,30 @@ export default function AIHealthInsights({ weekData, userName }) {
                     ))}
                   </ul>
                 </div>
+
+                {/* Predictive Forecasts */}
+                {insights.predictive_alerts && insights.predictive_alerts.length > 0 && (
+                  <div className="bg-black/40 border border-orange-500/30 rounded-xl p-6 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl" />
+                    <h3 className="flex items-center gap-2 text-orange-400 font-bold mb-4 relative z-10">
+                      <Sparkles className="w-5 h-5" /> 30-Day Predictive Forecast
+                    </h3>
+                    <ul className="space-y-3 relative z-10">
+                      {insights.predictive_alerts.map((alert, i) => (
+                        <motion.li 
+                          key={i}
+                          initial={{ opacity: 0, scale: 0.95 }} 
+                          animate={{ opacity: 1, scale: 1 }} 
+                          transition={{ delay: 0.1 * i + 0.4 }}
+                          className="flex items-start gap-3 bg-orange-500/10 p-4 rounded-lg border border-orange-500/20"
+                        >
+                          <Activity className="w-5 h-5 text-orange-400 flex-shrink-0 mt-0.5 animate-pulse" />
+                          <span className="text-gray-200 text-sm font-medium leading-relaxed">{alert}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </motion.div>
           )}

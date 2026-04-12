@@ -202,24 +202,24 @@ const handleAddComment = async (blogId) => {
   return (
     <div className="min-h-screen bg-black">
       {/* Navbar */}
-      <nav className="bg-black border-b border-green-500">
+      <nav className="bg-black border-b border-orange-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-green-500">WellNest</h1>
+              <h1 className="text-2xl font-bold text-orange-500">WellNest</h1>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <Link to="/community-post" className="text-white hover:text-green-500 transition-colors">Community Post</Link>
+              <Link to="/community-post" className="text-white hover:text-orange-500 transition-colors">Community Post</Link>
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-2 bg-green-500 text-black px-6 py-2 rounded-lg hover:bg-green-600 transition-colors font-semibold text-lg"
+                className="inline-flex items-center gap-2 bg-orange-500 text-black px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors font-semibold text-lg"
               >
                 <Upload size={20} />
                 Start Writing
               </button>
             </div>
             <div className="md:hidden">
-              <button onClick={() => setIsNavOpen(!isNavOpen)} className="text-green-500 hover:text-green-600">
+              <button onClick={() => setIsNavOpen(!isNavOpen)} className="text-orange-500 hover:text-orange-600">
                 {isNavOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </div>
@@ -231,7 +231,7 @@ const handleAddComment = async (blogId) => {
                   setIsModalOpen(true)
                   setIsNavOpen(false)
                 }}
-                className="w-full flex items-center justify-center gap-2 bg-green-500 text-black px-6 py-2 rounded-lg hover:bg-green-600 transition-colors font-semibold"
+                className="w-full flex items-center justify-center gap-2 bg-orange-500 text-black px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors font-semibold"
               >
                 <Upload size={20} />
                 Upload Blog
@@ -245,11 +245,11 @@ const handleAddComment = async (blogId) => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
           <div className="bg-gray-900 rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="border-b border-green-500 p-6 flex justify-between items-center sticky top-0 bg-gray-900">
-              <h2 className="text-2xl font-bold text-green-500">Upload Blog</h2>
+            <div className="border-b border-orange-500 p-6 flex justify-between items-center sticky top-0 bg-gray-900">
+              <h2 className="text-2xl font-bold text-orange-500">Upload Blog</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-green-500 transition-colors"
+                className="text-gray-400 hover:text-orange-500 transition-colors"
               >
                 <X size={24} />
               </button>
@@ -264,7 +264,7 @@ const handleAddComment = async (blogId) => {
                   onChange={handleInputChange}
                   required
                   placeholder="Enter your blog title"
-                  className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 transition-colors placeholder-gray-500"
+                  className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-orange-500 transition-colors placeholder-gray-500"
                 />
               </div>
               <div>
@@ -276,7 +276,7 @@ const handleAddComment = async (blogId) => {
                   onChange={handleInputChange}
                   required
                   placeholder="Enter your name"
-                  className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 transition-colors placeholder-gray-500"
+                  className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-orange-500 transition-colors placeholder-gray-500"
                 />
               </div>
               <div>
@@ -288,7 +288,7 @@ const handleAddComment = async (blogId) => {
                   required
                   placeholder="Write your blog content here..."
                   rows="6"
-                  className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 transition-colors placeholder-gray-500 resize-none"
+                  className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-orange-500 transition-colors placeholder-gray-500 resize-none"
                 />
               </div>
               <div>
@@ -298,20 +298,20 @@ const handleAddComment = async (blogId) => {
                   accept="image/*"
                   onChange={handleThumbnailChange}
                   required
-                  className="flex-1 bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-3 file:bg-green-500 file:text-black file:border-0 file:rounded file:px-3 file:py-1 file:cursor-pointer file:font-semibold hover:file:bg-green-600 transition-colors"
+                  className="flex-1 bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-3 file:bg-orange-500 file:text-black file:border-0 file:rounded file:px-3 file:py-1 file:cursor-pointer file:font-semibold hover:file:bg-orange-600 transition-colors"
                 />
                 {thumbnailPreview && (
                   <img
                     src={thumbnailPreview || "/placeholder.svg"}
                     alt="Thumbnail preview"
-                    className="mt-3 w-full h-48 object-cover rounded-lg border border-green-500"
+                    className="mt-3 w-full h-48 object-cover rounded-lg border border-orange-500"
                   />
                 )}
               </div>
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 bg-green-500 text-black font-semibold py-3 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 bg-orange-500 text-black font-semibold py-3 rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"
                 >
                   <Upload size={20} /> Upload Blog
                 </button>
@@ -335,13 +335,13 @@ const handleAddComment = async (blogId) => {
           <div className="flex justify-center gap-4">
             <button
               onClick={() => setFilterType("user")}
-              className={`px-4 py-2 rounded-lg font-semibold ${filterType === "user" ? "bg-green-500 text-black" : "bg-gray-700 text-white"}`}
+              className={`px-4 py-2 rounded-lg font-semibold ${filterType === "user" ? "bg-orange-500 text-black" : "bg-gray-700 text-white"}`}
             >
               User
             </button>
             <button
               onClick={() => setFilterType("trainer")}
-              className={`px-4 py-2 rounded-lg font-semibold ${filterType === "trainer" ? "bg-green-500 text-black" : "bg-gray-700 text-white"}`}
+              className={`px-4 py-2 rounded-lg font-semibold ${filterType === "trainer" ? "bg-orange-500 text-black" : "bg-gray-700 text-white"}`}
             >
               Trainer
             </button>
@@ -365,7 +365,7 @@ const handleAddComment = async (blogId) => {
                 />
                 <div className="p-4">
                   <h3
-                    className="text-xl font-bold text-white cursor-pointer hover:text-green-500 transition-colors"
+                    className="text-xl font-bold text-white cursor-pointer hover:text-orange-500 transition-colors"
                     onClick={() => openBlogPage(blog)}
                   >
                     {blog.title}
@@ -387,7 +387,7 @@ const handleAddComment = async (blogId) => {
 
                     <button
                       onClick={() => toggleComments(blog.id)}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800 text-gray-400 hover:text-green-500 hover:bg-gray-700 transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800 text-gray-400 hover:text-orange-500 hover:bg-gray-700 transition-colors"
                     >
                       <MessageCircle size={18} />
                       <span className="text-sm">{commentStates[blog.id]?.comments?.length || 0}</span>
@@ -400,7 +400,7 @@ const handleAddComment = async (blogId) => {
                       <div className="max-h-48 overflow-y-auto space-y-2">
                         {commentStates[blog.id]?.comments?.map((comment, idx) => (
                           <div key={idx} className="bg-gray-800 p-3 rounded-lg">
-                            <p className="text-green-500 font-semibold text-sm">{comment.userName}</p>
+                            <p className="text-orange-500 font-semibold text-sm">{comment.userName}</p>
                             <p className="text-gray-300 text-sm mt-1">{comment.text}</p>
                           </div>
                         ))}
@@ -421,11 +421,11 @@ const handleAddComment = async (blogId) => {
                               },
                             }))
                           }}
-                          className="flex-1 bg-gray-800 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500 transition-colors"
+                          className="flex-1 bg-gray-800 text-white border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 transition-colors"
                         />
                         <button
                           onClick={() => handleAddComment(blog.id)}
-                          className="bg-green-500 text-black px-3 py-2 rounded-lg hover:bg-green-600 transition-colors font-semibold text-sm"
+                          className="bg-orange-500 text-black px-3 py-2 rounded-lg hover:bg-orange-600 transition-colors font-semibold text-sm"
                         >
                           Post
                         </button>

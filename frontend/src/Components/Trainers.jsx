@@ -66,19 +66,19 @@ export default function Trainers() {
   }, [filteredTrainers, selectedTrainer])
 
   return (
-    <div className="relative h-screen bg-black text-gray-100">
+    <div className="relative h-screen bg-slate-950 text-gray-100">
     <Link
       to="/trainerTalk"
-      className="absolute top-4 right-6 z-50 bg-green-500 text-black px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition"
+      className="absolute top-4 right-6 z-50 bg-orange-500 text-black px-4 py-2 rounded-lg font-semibold hover:bg-orange-600 transition"
     >
       Trainer Talk
     </Link>
   <main className="flex h-full">
       {/* Left Sidebar - Trainers List */}
-      <div className="w-72 border-r border-green-900 bg-black overflow-y-auto flex flex-col">
-        <div className="p-6 border-b border-green-900 space-y-4">
+      <div className="w-72 border-r border-orange-900/30 bg-slate-950 overflow-y-auto flex flex-col">
+        <div className="p-6 border-b border-orange-900/30 space-y-4">
           <div>
-            <h1 className="text-2xl font-bold text-green-500">Our Trainers</h1>
+            <h1 className="text-2xl font-bold text-orange-400">Our Trainers</h1>
             <p className="text-sm text-gray-400 mt-1">Select a trainer to view details</p>
           </div>
 
@@ -90,7 +90,7 @@ export default function Trainers() {
               placeholder="Search by expertise..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-900 border border-green-700 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+              className="w-full pl-10 pr-4 py-2 bg-slate-900 border border-orange-700/40 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30"
             />
           </div>
         </div>
@@ -102,10 +102,10 @@ export default function Trainers() {
               <div
                 key={trainer.id}
                 onClick={() => setSelectedTrainer(trainer)}
-                className={`p-4 border-b border-green-900 cursor-pointer transition-all ${
+                className={`p-4 border-b border-orange-900/20 cursor-pointer transition-all ${
                   selectedTrainer.id === trainer.id
-                    ? "bg-green-900 bg-opacity-30 border-l-4 border-l-green-500"
-                    : "hover:bg-gray-900"
+                    ? "bg-orange-900/20 border-l-4 border-l-orange-500"
+                    : "hover:bg-slate-900"
                 }`}
               >
                 <img
@@ -113,7 +113,7 @@ export default function Trainers() {
                   alt={trainer.name}
                   className="w-full h-32 object-cover rounded-lg mb-2"
                 />
-                <h3 className="font-bold text-green-400 text-sm">{trainer.name}</h3>
+                <h3 className="font-bold text-orange-400 text-sm">{trainer.name}</h3>
                 <p className="text-xs text-gray-400 mt-1">{trainer.expertise.join(", ")}</p>
               </div>
             ))
@@ -124,7 +124,7 @@ export default function Trainers() {
       </div>
 
       {/* Right Content - Trainer Details */}
-      <div className="flex-1 overflow-y-auto bg-gray-950 p-8">
+      <div className="flex-1 overflow-y-auto bg-slate-900/50 p-8">
         {selectedTrainer && (
           <div className="max-w-2xl">
             {/* Trainer Hero Image */}
@@ -136,7 +136,7 @@ export default function Trainers() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
               <div className="absolute bottom-4 left-4 right-4">
-                <h1 className="text-4xl font-bold text-green-400">{selectedTrainer.name}</h1>
+                <h1 className="text-4xl font-bold text-orange-400">{selectedTrainer.name}</h1>
                 <p className="text-gray-300 mt-2">{selectedTrainer.title}</p>
               </div>
             </div>
@@ -146,12 +146,12 @@ export default function Trainers() {
 
             {/* Expertise Badges */}
             <div className="mb-6">
-              <h2 className="text-lg font-bold text-green-500 mb-3">Specializations</h2>
+              <h2 className="text-lg font-bold text-orange-400 mb-3">Specializations</h2>
               <div className="flex flex-wrap gap-2">
                 {selectedTrainer.expertise.map((exp) => (
                   <span
                     key={exp}
-                    className="px-3 py-1 bg-green-900 bg-opacity-50 border border-green-500 text-green-300 rounded-full text-sm font-medium"
+                    className="px-3 py-1 bg-orange-900/30 border border-orange-500/50 text-orange-300 rounded-full text-sm font-medium"
                   >
                     {exp}
                   </span>
@@ -161,19 +161,19 @@ export default function Trainers() {
 
             {/* Availability */}
             <div className="mb-6">
-              <h2 className="text-lg font-bold text-green-500 mb-3">Availability</h2>
-              <div className="bg-gray-900 p-4 rounded-lg border border-green-900">
+              <h2 className="text-lg font-bold text-orange-400 mb-3">Availability</h2>
+              <div className="bg-slate-900 p-4 rounded-lg border border-orange-900/30">
                 <p className="text-gray-300">{selectedTrainer.availability}</p>
               </div>
             </div>
 
             {/* Certifications */}
             <div className="mb-6">
-              <h2 className="text-lg font-bold text-green-500 mb-3">Certifications</h2>
+              <h2 className="text-lg font-bold text-orange-400 mb-3">Certifications</h2>
               <ul className="space-y-2">
                 {selectedTrainer.certifications.map((cert) => (
                   <li key={cert} className="flex items-center text-gray-300">
-                    <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                    <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
                     {cert}
                   </li>
                 ))}
@@ -181,21 +181,21 @@ export default function Trainers() {
             </div>
 
             {/* Contact */}
-            <div className="bg-green-900 bg-opacity-20 border border-green-700 p-4 rounded-lg">
-              <h2 className="text-lg font-bold text-green-500 mb-4">Get in Touch</h2>
+            <div className="bg-orange-900/15 border border-orange-700/40 p-4 rounded-lg">
+              <h2 className="text-lg font-bold text-orange-400 mb-4">Get in Touch</h2>
               <div className="space-y-3">
                 <div>
                   <p className="text-gray-400 text-sm mb-1">Email</p>
                   <a
                     href={`mailto:${selectedTrainer.email}`}
-                    className="text-green-400 hover:text-green-300 transition"
+                    className="text-orange-400 hover:text-orange-300 transition"
                   >
                     {selectedTrainer.email}
                   </a>
                 </div>
                 <div>
                   <p className="text-gray-400 text-sm mb-1">Phone</p>
-                  <a href={`tel:${selectedTrainer.phone}`} className="text-green-400 hover:text-green-300 transition">
+                  <a href={`tel:${selectedTrainer.phone}`} className="text-orange-400 hover:text-orange-300 transition">
                     {selectedTrainer.phone}
                   </a>
                 </div>
@@ -203,7 +203,7 @@ export default function Trainers() {
             </div>
             <button
       onClick={handleRegister}
-      className="mt-6 w-full bg-green-500 text-black font-semibold py-3 rounded-lg hover:bg-green-600 transition-colors"
+      className="mt-6 w-full bg-orange-500 text-black font-semibold py-3 rounded-lg hover:bg-orange-600 transition-colors"
     >
       Register
     </button>

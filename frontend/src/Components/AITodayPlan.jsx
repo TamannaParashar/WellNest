@@ -76,7 +76,7 @@ export default function AITodayPlan({ weekData, goals, userName }) {
         localStorage.setItem(cacheKey, text)
       } catch (err) {
         console.error("AI Today Plan error:", err)
-         // Fallback if API fails
+        // Fallback if API fails
         setPlan("Stay consistent and focus on balancing your hydration and sleep today.")
         setError(true)
       } finally {
@@ -90,13 +90,13 @@ export default function AITodayPlan({ weekData, goals, userName }) {
   if (!weekData || weekData.length === 0) return null
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-500/30 rounded-2xl p-6 shadow-xl relative overflow-hidden"
     >
       <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl" />
-      
+
       <div className="flex flex-col md:flex-row gap-5 items-center relative z-10">
 
         <div className="flex-1 text-center md:text-left">
@@ -104,27 +104,27 @@ export default function AITodayPlan({ weekData, goals, userName }) {
             <Target className="w-4 h-4" /> Today's Mission
           </h3>
           {loading ? (
-             <div className="space-y-2 mt-2 w-full max-w-lg">
-               <div className="h-4 bg-white/10 rounded animate-pulse w-full" />
-               <div className="h-4 bg-white/10 rounded animate-pulse w-4/5" />
-             </div>
+            <div className="space-y-2 mt-2 w-full max-w-lg">
+              <div className="h-4 bg-white/10 rounded animate-pulse w-full" />
+              <div className="h-4 bg-white/10 rounded animate-pulse w-4/5" />
+            </div>
           ) : (
             <p className="text-white text-lg md:text-xl font-medium leading-relaxed drop-shadow-md">
               "{plan}"
             </p>
           )}
         </div>
-        
+
         {!loading && (
-           <Link to="/tracker" className="flex-shrink-0">
-             <motion.button 
-               whileHover={{ scale: 1.05 }}
-               whileTap={{ scale: 0.95 }}
-               className="w-full px-5 py-2.5 bg-indigo-500/20 hover:bg-indigo-500 text-indigo-300 hover:text-white border border-indigo-500/50 rounded-xl transition-all flex items-center justify-center gap-2 font-semibold shadow-lg shadow-indigo-500/20"
-             >
-                Let's Do It <ArrowRightCircle className="w-5 h-5" />
-             </motion.button>
-           </Link>
+          <Link to="/tracker" className="flex-shrink-0">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full px-5 py-2.5 bg-indigo-500/20 hover:bg-indigo-500 text-indigo-300 hover:text-white border border-indigo-500/50 rounded-xl transition-all flex items-center justify-center gap-2 font-semibold shadow-lg shadow-indigo-500/20"
+            >
+              Let's Do It <ArrowRightCircle className="w-5 h-5" />
+            </motion.button>
+          </Link>
         )}
       </div>
     </motion.div>

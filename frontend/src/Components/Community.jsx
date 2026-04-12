@@ -201,15 +201,15 @@ export default function Community() {
   return (
     <div className="min-h-screen bg-black">
       {/* NAVBAR */}
-      <nav className="bg-black border-b border-green-500">
+      <nav className="bg-black border-b border-emerald-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <h1 className="text-2xl font-bold text-green-500">WellNest</h1>
+            <h1 className="text-2xl font-bold text-emerald-500">WellNest</h1>
 
             <div className="hidden md:flex items-center gap-8">
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-2 bg-green-500 text-black px-6 py-2 rounded-lg hover:bg-green-600"
+                className="inline-flex items-center gap-2 bg-emerald-500 text-black px-6 py-2 rounded-lg hover:bg-emerald-600"
               >
                 <Upload size={20} />
                 Start Writing
@@ -217,7 +217,7 @@ export default function Community() {
             </div>
 
             <button
-              className="md:hidden text-green-500"
+              className="md:hidden text-emerald-500"
               onClick={() => setIsNavOpen(!isNavOpen)}
             >
               {isNavOpen ? <X size={24} /> : <Menu size={24} />}
@@ -231,10 +231,10 @@ export default function Community() {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
           <div className="bg-gray-900 rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="border-b p-6 flex justify-between items-center bg-gray-900">
-              <h2 className="text-2xl font-bold text-green-500">Write a Post</h2>
+              <h2 className="text-2xl font-bold text-emerald-500">Write a Post</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-green-500"
+                className="text-gray-400 hover:text-emerald-500"
               >
                 <X size={24} />
               </button>
@@ -253,7 +253,7 @@ export default function Community() {
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 bg-green-500 text-black font-semibold py-3 rounded-lg hover:bg-green-600 flex items-center justify-center gap-2"
+                  className="flex-1 bg-emerald-500 text-black font-semibold py-3 rounded-lg hover:bg-emerald-600 flex items-center justify-center gap-2"
                 >
                   <Upload size={20} /> Post
                 </button>
@@ -277,7 +277,7 @@ export default function Community() {
           <div key={post.id} className="bg-gray-900 rounded-lg p-4 space-y-3 shadow-lg">
 
             {/* NAME + TIME */}
-            <p className="text-green-400 font-semibold">{post.userName}</p>
+            <p className="text-emerald-400 font-semibold">{post.userName}</p>
             <p className="text-gray-500 text-xs">{timeAgo(post.createdAt)}</p>
 
             {/* POST CONTENT */}
@@ -302,7 +302,7 @@ export default function Community() {
               {/* COMMENTS */}
               <button
                 onClick={() => toggleComments(post.id)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800 text-gray-400 hover:text-green-500 hover:bg-gray-700"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800 text-gray-400 hover:text-emerald-500 hover:bg-gray-700"
               >
                 <MessageCircle size={18} />
                 <span className="text-sm">
@@ -313,7 +313,7 @@ export default function Community() {
               {/* SHARE */}
               <button
                 onClick={() => handleShare(post.id)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800 text-gray-400 hover:text-green-500 hover:bg-gray-700"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800 text-gray-400 hover:text-emerald-500 hover:bg-gray-700"
               >
                 <Share2 size={18} />
               </button>
@@ -337,7 +337,7 @@ export default function Community() {
                 <div className="max-h-48 overflow-y-auto space-y-2">
                   {commentStates[post.id]?.comments?.map((cmt, idx) => (
                     <div key={idx} className="bg-gray-800 p-3 rounded-lg">
-                      <p className="text-green-500 font-semibold text-sm">{cmt.userName}</p>
+                      <p className="text-emerald-500 font-semibold text-sm">{cmt.userName}</p>
                       <p className="text-gray-300 text-sm mt-1">{cmt.text}</p>
                     </div>
                   ))}
@@ -359,7 +359,7 @@ export default function Community() {
                   />
                   <button
                     onClick={() => handleAddComment(post.id)}
-                    className="bg-green-500 text-black px-3 py-2 rounded-lg hover:bg-green-600 font-semibold text-sm"
+                    className="bg-emerald-500 text-black px-3 py-2 rounded-lg hover:bg-emerald-600 font-semibold text-sm"
                   >
                     Post
                   </button>

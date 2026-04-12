@@ -32,12 +32,12 @@ export default function TrainerHome() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen">
       {/* Navbar */}
-      <nav className="bg-black border-b border-green-500/30 fixed top-0 left-0 w-full z-50 backdrop-blur-sm">
+      <nav className="bg-slate-950 border-b border-orange-500/20 fixed top-0 left-0 w-full z-50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-green-500 flex items-center gap-2">
-            <Activity className="w-7 h-7" />
+          <h1 className="text-2xl font-bold text-orange-400 flex items-center gap-2">
+            <img src="/logo.jpeg" alt="WellNest Logo" className="w-14 h-14 object-cover rounded-full" />
             WellNest Trainer
           </h1>
 
@@ -46,14 +46,14 @@ export default function TrainerHome() {
             <button onClick={getProfile} className="nav-link">My Profile</button>
             <Link to="/blog" className="nav-link">Blogs</Link>
             <SignOutButton>
-              <button className="px-4 py-2 bg-green-500 text-black rounded-lg font-semibold">
+              <button className="px-4 py-2 bg-orange-500 text-black rounded-lg font-semibold">
                 Sign Out
               </button>
             </SignOutButton>
           </div>
 
           <button
-            className="md:hidden text-green-500"
+            className="md:hidden text-orange-500"
             onClick={() => setIsNavOpen(!isNavOpen)}
           >
             {isNavOpen ? <X /> : <Menu />}
@@ -61,11 +61,11 @@ export default function TrainerHome() {
         </div>
 
         {isNavOpen && (
-          <div className="md:hidden border-t border-green-500/30 p-4 space-y-3">
+          <div className="md:hidden border-t border-orange-500/20 p-4 space-y-3">
             <Link className="block text-center nav-link" to="trainerDashboard">Dashboard</Link>
             <Link className="block text-center nav-link" to="blogs">Blogs</Link>
             <SignOutButton>
-              <button className="w-full bg-green-500 text-black py-2 rounded-lg font-semibold">
+              <button className="w-full bg-orange-500 text-black py-2 rounded-lg font-semibold">
                 Sign Out
               </button>
             </SignOutButton>
@@ -77,7 +77,7 @@ export default function TrainerHome() {
       <div className="pt-20 max-w-7xl mx-auto px-4 pb-16">
         {/* Hero */}
         <section className="text-center py-16">
-          <h1 className="text-5xl font-bold text-green-500">
+          <h1 className="text-5xl font-bold text-orange-400">
             Welcome {trainersName}
           </h1>
           <p className="text-gray-300 mt-4 max-w-3xl mx-auto">
@@ -135,22 +135,22 @@ export default function TrainerHome() {
 
       {trainerProfileModule && trainerProfile && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
-  <div className="relative bg-gradient-to-br from-black via-gray-900 to-black border border-green-500/30 rounded-3xl p-8 w-full max-w-md shadow-2xl shadow-green-500/20 max-h-[90vh] overflow-y-auto">
+  <div className="relative bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 border border-orange-500/20 rounded-3xl p-8 w-full max-w-md shadow-2xl shadow-orange-500/10 max-h-[90vh] overflow-y-auto">
 
     {/* Close Button (top right) */}
     <button
       onClick={closeProfileModal}
-      className="absolute top-4 right-4 text-gray-400 hover:text-green-500 text-xl"
+      className="absolute top-4 right-4 text-gray-400 hover:text-orange-500 text-xl"
     >
       ✕
     </button>
 
     {/* Profile Header */}
     <div className="flex flex-col items-center mb-6">
-      <div className="w-20 h-20 rounded-full bg-green-500 flex items-center justify-center text-black text-3xl font-bold shadow-lg">
+      <div className="w-20 h-20 rounded-full bg-orange-500 flex items-center justify-center text-black text-3xl font-bold shadow-lg">
         {trainerProfile.trainerName?.[0]?.toUpperCase()}
       </div>
-      <h2 className="text-2xl font-bold mt-3 text-green-500">
+      <h2 className="text-2xl font-bold mt-3 text-orange-400">
         {trainerProfile.trainerName}
       </h2>
       <p className="text-gray-400 text-sm">
@@ -166,8 +166,8 @@ export default function TrainerHome() {
       <ProfileItem label="Expertise" value={trainerProfile.trainerExpertise} />
       <ProfileItem label="Certification" value={trainerProfile.trainerCertification} />
 
-      <div className="bg-black/50 border border-green-500/20 rounded-xl p-4">
-        <p className="text-green-500 font-semibold mb-1">Bio</p>
+      <div className="bg-black/50 border border-orange-500/15 rounded-xl p-4">
+        <p className="text-orange-400 font-semibold mb-1">Bio</p>
         <p className="text-gray-300 text-sm leading-relaxed">
           {trainerProfile.trainerBio}
         </p>
@@ -177,7 +177,7 @@ export default function TrainerHome() {
     {/* Close Button Bottom */}
     <button
       onClick={closeProfileModal}
-      className="w-full mt-6 py-3 bg-green-500 text-black rounded-xl hover:bg-green-400 transition-all font-bold"
+      className="w-full mt-6 py-3 bg-orange-500 text-black rounded-xl hover:bg-orange-400 transition-all font-bold"
     >
       Close
     </button>
@@ -185,7 +185,7 @@ export default function TrainerHome() {
 </div>
       )}
 
-      <footer className="text-center text-green-500 pb-4">
+      <footer className="text-center text-orange-400/60 pb-4">
         &copy; {new Date().getFullYear()} WellNest. All rights reserved | <Link to='#'>Privacy Policy</Link>
       </footer>
     </div>
@@ -197,9 +197,9 @@ function FeatureCard({ icon, title, desc, action }) {
   return (
     <div
       onClick={action}
-      className="cursor-pointer bg-black border-2 border-green-500/30 rounded-2xl p-6 hover:border-green-500 transition-all"
+      className="cursor-pointer bg-slate-950 border-2 border-orange-500/20 rounded-2xl p-6 hover:border-orange-500 transition-all"
     >
-      <div className="flex items-center gap-3 mb-4 text-green-500">
+      <div className="flex items-center gap-3 mb-4 text-orange-400">
         {icon}
         <h2 className="text-xl font-bold">{title}</h2>
       </div>
@@ -209,8 +209,8 @@ function FeatureCard({ icon, title, desc, action }) {
 }
 function ProfileItem({ label, value }) {
   return (
-    <div className="flex justify-between items-center bg-black/50 border border-green-500/20 rounded-xl px-4 py-3">
-      <span className="text-green-500 font-medium">{label}</span>
+    <div className="flex justify-between items-center bg-black/50 border border-orange-500/15 rounded-xl px-4 py-3">
+      <span className="text-orange-400 font-medium">{label}</span>
       <span className="text-gray-300 text-sm text-right max-w-[60%]">
         {value || "—"}
       </span>
